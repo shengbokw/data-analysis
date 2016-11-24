@@ -6,9 +6,10 @@ import json
 
 def insert_data(data, db):
 
-    # Your code here. Insert the data into a collection 'arachnid'
+    for a in data:
+    	db.arachnid.insert_one(a)
 
-    pass
+    
 
 
 if __name__ == "__main__":

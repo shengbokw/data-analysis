@@ -51,6 +51,7 @@ demonstrate the output structure form, for the entries that require updating.
 import codecs
 import csv
 import json
+import re
 import pprint
 
 DATAFILE = 'arachnid.csv'
@@ -58,19 +59,41 @@ FIELDS ={'rdf-schema#label': 'label',
          'binomialAuthority_label': 'binomialAuthority'}
 
 
+def parse_label(v):
+    if v == "NULL":
+        return None
+        
+    a = re.compile('\(.*?\)')
+    v = a.sub('', v)
+    v = v.strip()
+
+    return v
+
 def add_field(filename, fields):
     """
     Complete this function to set up a dictionary for adding binomialAuthority
     information to the database.
     """
     process_fields = fields.keys()
-    data = {}
+    data = []   
     with open(filename, "r") as f:
         reader = csv.DictReader(f)
         for i in range(3):
             l = reader.next()
-        # YOUR CODE HERE
-
+            
+        for line in reader:
+            fields = {}
+            for c in line:
+                if c == 'rdf-schema#label':
+                    label = parse_label(line[c])
+                if c == 'binomialAuthority_label':
+                    binomialAuthority = line[c]
+                    
+            if binomialAuthority != "NULL":
+                fields["label"] = label
+                fields["binomialAuthority"] = binomialAuthority
+                data.append(fields)    
+                    
     return data
 
 
@@ -78,9 +101,10 @@ def update_db(data, db):
     """
     Use the dictionary you generated from add_field to update the database.
     """
-    # YOUR CODE HERE
-    pass
-
+    for item in data:
+        doc = db.arachnid.find_one({'label': item['label']})
+        doc['classification']['binomialAuthority'] = item['binomialAuthority']
+        db.arachnid.save(doc)
 
 def test():
     # Please change only the add_field and update_db functions!
@@ -89,6 +113,7 @@ def test():
     # and as an example for running this code locally!
     
     data = add_field(DATAFILE, FIELDS)
+    
     from pymongo import MongoClient
     client = MongoClient("mongodb://localhost:27017")
     db = client.examples
@@ -98,7 +123,10 @@ def test():
     updated = db.arachnid.find_one({'label': 'Opisthoncana'})
     assert updated['classification']['binomialAuthority'] == 'Embrik Strand'
     pprint.pprint(data)
-
+    
+    for item in data:
+        doc = db.arachnid.find_one({'label': item['label']})
+        doc['classification']['binomialAuthority'] = item['binomialAuthority']
 
 
 if __name__ == "__main__":

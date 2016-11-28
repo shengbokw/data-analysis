@@ -37,7 +37,10 @@ def get_db(db_name):
 
 def make_pipeline():
     # complete the aggregation pipeline
-    pipeline = [ ]
+    pipeline = [{"$match":{"country":{"$ne": None}}},
+                {"$unwind":"$isPartOf"},
+                {"$group":{"_id":{"country":"$country", "region":"$isPartOf"}, "avgPartOf":{"$avg":"$population"}}},
+                {"$group":{"_id":"$_id.country", "avgRegionalPopulation":{"$avg":"$avgPartOf"}}}]
     return pipeline
 
 def aggregate(db, pipeline):
@@ -62,21 +65,3 @@ if __name__ == '__main__':
             assert abs(country["avgRegionalPopulation"] - 14750.784447977203) < 1e-10
             key_pop = country["avgRegionalPopulation"]
     assert {'_id': 'Lithuania', 'avgRegionalPopulation': key_pop} in result
-
-
-{
-    "_id" : ObjectId("52fe1d364b5ab856eea75ebc"),
-    "elevation" : 1855,
-    "name" : "Kud",
-    "country" : "India",
-    "lon" : 75.28,
-    "lat" : 33.08,
-    "isPartOf" : [
-        "Jammu and Kashmir",
-        "Udhampur district"
-    ],
-    "timeZone" : [
-        "Indian Standard Time"
-    ],
-    "population" : 1140
-}

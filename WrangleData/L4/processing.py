@@ -64,23 +64,34 @@ FIELDS ={'rdf-schema#label': 'label',
          'genus_label': 'genus'}
 
 
-def process_file(filename, fields):
+CLASSIFY = {'kingdom','family','order','phylum','genus','class'}
 
-    process_fields = fields.keys()
-    data = []
-    with open(filename, "r") as f:
-        reader = csv.DictReader(f)
-        for i in range(3):
-            l = reader.next()
+def parse_label(v):
+    if v == "NULL":
+        return None
+    a = re.compile('\(.*?\)')
+    v = a.sub('', v)
+    v = v.strip()
 
-        for line in reader:
-            data[FIELDS] = json.loads(line)
-            # YOUR CODE HERE
-            pass
-    return data
+    return v
 
+
+def parse_normal(v):
+    if v == "NULL":
+        return None
+    v = v.strip()
+
+    return v
+
+def parse_name(v):
+    a = re.compile('^a-zA-Z')
+    if v == "NULL" or a.match(v):
+        return True
+    return False
 
 def parse_array(v):
+    if v == "NULL":
+        return None
     if (v[0] == "{") and (v[-1] == "}"):
         v = v.lstrip("{")
         v = v.rstrip("}")
@@ -88,6 +99,47 @@ def parse_array(v):
         v_array = [i.strip() for i in v_array]
         return v_array
     return [v]
+
+def parse_line(line, process_fields):
+    fields = {}
+    classification = {}
+    
+    for c in line:
+        if c in process_fields:
+            if c == 'rdf-schema#label':
+                fields['label'] = parse_label(line[c])
+            elif c == 'name':
+                fields['name'] = line[c]
+            elif FIELDS[c] in CLASSIFY:
+                classification[FIELDS[c]] = parse_normal(line[c])
+            elif c == 'synonym':
+                fields[c] = parse_array(line[c])
+            else:
+                fields[FIELDS[c]] = parse_normal(line[c])
+                
+    if parse_name(fields["name"]):
+        fields["name"] = fields["label"]
+    else:
+        fields["name"] = parse_normal(fields["name"])
+    fields['classification'] = classification
+
+    return fields
+        
+def process_file(filename, fields):
+
+    process_fields = fields.keys()
+    data = []
+    
+    with open(filename, "r") as f:
+        reader = csv.DictReader(f)
+        for i in range(3):
+            l = reader.next()
+
+        for line in reader:
+            fields = parse_line(line, process_fields)
+            data.append(fields)
+            
+    return data
 
 
 def test():

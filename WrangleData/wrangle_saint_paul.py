@@ -198,16 +198,51 @@ if __name__ == "__main__":
     test()
 
 
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.0.2">
+ <bounds minlat="54.0889580" minlon="12.2487570" maxlat="54.0913900" maxlon="12.2524800"/>
+ <node id="298884269" lat="54.0901746" lon="12.2482632" user="SvenHRO" uid="46882" visible="true" version="1" changeset="676636" timestamp="2008-09-21T21:37:45Z"/>
+ <node id="261728686" lat="54.0906309" lon="12.2441924" user="PikoWinter" uid="36744" visible="true" version="1" changeset="323878" timestamp="2008-05-03T13:39:23Z"/>
+ <node id="1831881213" version="1" changeset="12370172" lat="54.0900666" lon="12.2539381" user="lafkor" uid="75625" visible="true" timestamp="2012-07-20T09:43:19Z">
+  <tag k="name" v="Neu Broderstorf"/>
+  <tag k="traffic_sign" v="city_limit"/>
+ </node>
+ ...
+ <node id="298884272" lat="54.0901447" lon="12.2516513" user="SvenHRO" uid="46882" visible="true" version="1" changeset="676636" timestamp="2008-09-21T21:37:45Z"/>
+ <way id="26659127" user="Masch" uid="55988" visible="true" version="5" changeset="4142606" timestamp="2010-03-16T11:47:08Z">
+  <nd ref="292403538"/>
+  <nd ref="298884289"/>
+  ...
+  <nd ref="261728686"/>
+  <tag k="highway" v="unclassified"/>
+  <tag k="name" v="Pastower Straße"/>
+ </way>
+ <relation id="56688" user="kmvar" uid="56190" visible="true" version="28" changeset="6947637" timestamp="2011-01-12T14:23:49Z">
+  <member type="node" ref="294942404" role=""/>
+  ...
+  <member type="node" ref="364933006" role=""/>
+  <member type="way" ref="4579143" role=""/>
+  ...
+  <member type="node" ref="249673494" role=""/>
+  <tag k="name" v="Küstenbus Linie 123"/>
+  <tag k="network" v="VVW"/>
+  <tag k="operator" v="Regionalverkehr Küste"/>
+  <tag k="ref" v="123"/>
+  <tag k="route" v="bus"/>
+  <tag k="type" v="route"/>
+ </relation>
+ ...
+</osm>
 
 {'address': {'building_id': '366409',
-  'city': 'Chicago',
-  'country': 'US',
-  'housename': 'Village Hall',
-  'housenumber': '1412',
-  'levels': '1',
-  'postcode': '60067',
-  'state': 'Illinois',
-  'street': 'West Lexington St.'},
+            'city': 'Chicago',
+            'country': 'US',
+            'housename': 'Village Hall',
+            'housenumber': '1412',
+            'levels': '1',
+            'postcode': '60067',
+            'state': 'Illinois',
+            'street': 'West Lexington St.'},
  'amenity': 'townhall',
  'building': 'yes',
  'created': {'version': '0.6'},
@@ -216,12 +251,12 @@ if __name__ == "__main__":
  'id': '1557627',
  'name': 'Village Hall',
  'node_refs': ['2199822281',
-  '2199822390',
-  '2199822392',
-  '2199822369',
-  '2199822370',
-  '2199822284',
-  '2199822281'],
+              '2199822390',
+              '2199822392',
+              '2199822369',
+              '2199822370',
+              '2199822284',
+              '2199822281'],
  'outdoor_seating': 'no',
  'phone': '(773)-654-1347',
  'pos': [42.1251718, -88.0780576],

@@ -267,3 +267,26 @@ if __name__ == "__main__":
  'takeaway': 'yes',
  'type': 'restriction',
  'visible': 'true'}
+
+
+[{u'_id': u'502142', u'count': 81237},
+ {u'_id': u'10786', u'count': 48595},
+ {u'_id': u'451693', u'count': 36029},
+ {u'_id': u'7168', u'count': 20581},
+ {u'_id': u'4732', u'count': 19649},
+ {u'_id': u'38487', u'count': 18254},
+ {u'_id': u'91568', u'count': 10597},
+ {u'_id': u'16591', u'count': 10431},
+ {u'_id': u'1746371', u'count': 9709},
+ {u'_id': u'933061', u'count': 9098}]
+
+ [{u'_id': None, u'count': 71210}]
+
+
+[{u'_id': u'28145', u'count': 37},
+ {u'_id': u'4732', u'count': 19},
+ {u'_id': u'10786', u'count': 17},
+ {u'_id': u'700119', u'count': 8},
+ {u'_id': u'2809783', u'count': 2},
+ {u'_id': u'1741793', u'count': 2},
+ {u'_id': u'722137', u'count': 2}]

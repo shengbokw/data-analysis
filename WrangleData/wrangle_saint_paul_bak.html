@@ -11787,12 +11787,6 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
             <span class="p">}</span>
 
 <span class="n">CREATED</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;changeset&quot;</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;uid&quot;</span><span class="p">]</span>
-
-<span class="c1">#  Get the mininum and maxinum latitude and longitude of this map data for checking the input data&#39;s validity.</span>
-<span class="n">MINLAT</span> <span class="o">=</span> <span class="mf">44.471</span>
-<span class="n">MINLON</span> <span class="o">=</span> <span class="o">-</span><span class="mf">94.013</span>
-<span class="n">MAXLAT</span> <span class="o">=</span> <span class="mf">45.415</span>
-<span class="n">MAXLON</span> <span class="o">=</span> <span class="o">-</span><span class="mf">92.543</span>
 </pre></div>
 
 </div>
@@ -11902,29 +11896,7 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># check the element&#39;s location in a right place, if the location is wrong, then I will skip this element.</span>
-<span class="k">def</span> <span class="nf">is_right_location</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
-    <span class="k">if</span> <span class="s2">&quot;lat&quot;</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span> <span class="ow">and</span> <span class="s2">&quot;lon&quot;</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
-        <span class="n">lat</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span>
-        <span class="n">lon</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">isfloat</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="ow">and</span> <span class="n">isfloat</span><span class="p">(</span><span class="n">lon</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">MINLAT</span> <span class="o">&lt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">MAXLAT</span> <span class="ow">and</span> <span class="n">MINLON</span> <span class="o">&lt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">MAXLON</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">True</span>
-    
-    <span class="k">return</span> <span class="bp">False</span>             
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#this is a function of dealing with the member information under the relation element</span>
@@ -11949,66 +11921,15 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">get_multiple_location</span><span class="p">(</span><span class="n">txtfile</span><span class="p">):</span>
-    <span class="n">location</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">txtfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">location</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    
-    <span class="k">return</span> <span class="n">location</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">is_right_postcode</span><span class="p">(</span><span class="n">postcode</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">isfloat</span><span class="p">(</span><span class="n">postcode</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">True</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">False</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">shape_element</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">multilocations</span><span class="p">):</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">shape_element</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
     <span class="n">node</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s2">&quot;node&quot;</span> <span class="ow">or</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s2">&quot;way&quot;</span> <span class="ow">or</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s2">&quot;relation&quot;</span><span class="p">:</span>  
         <span class="c1">#make the result smaller, if these is no tag information under a element, I think it&#39;s useless</span>
         <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;tag&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span> 
-        
-        <span class="n">pos</span> <span class="o">=</span> <span class="p">[]</span>    
-        <span class="c1"># if the lat or lon information is absence, then the pos information should not be recorded.</span>
-        <span class="c1"># if the location is multiple, then I skip this element, (or just keep the first element)</span>
-        <span class="k">if</span> <span class="n">is_right_location</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
-            <span class="n">lat</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span>
-            <span class="n">lon</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">lat</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">lon</span><span class="p">)</span> <span class="ow">in</span> <span class="n">multilocations</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">None</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">)]</span>
-            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
         
         <span class="k">if</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
             <span class="n">node</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
@@ -12020,7 +11941,16 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 
         <span class="n">created</span> <span class="o">=</span> <span class="n">dealing_created</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">created</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;created&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">created</span>        
+            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;created&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">created</span>
+
+        <span class="n">pos</span> <span class="o">=</span> <span class="p">[]</span>    
+        <span class="c1"># if the lat or lon information is absence, then the pos information should not be recorded.</span>
+        <span class="k">if</span> <span class="s2">&quot;lat&quot;</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span> <span class="ow">and</span> <span class="s2">&quot;lon&quot;</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+            <span class="n">lat</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span>
+            <span class="n">lon</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s2">&quot;lon&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">isfloat</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="ow">and</span> <span class="n">isfloat</span><span class="p">(</span><span class="n">lon</span><span class="p">):</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">)]</span>
+                <span class="n">node</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span>
  
         <span class="n">address</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s2">&quot;tag&quot;</span><span class="p">):</span>
@@ -12031,10 +11961,7 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
                 <span class="c1">###let the key in dictionary be lower letter. </span>
                 <span class="c1">###If there is a second &quot;:&quot; that separates the type/direction of a street, then the tag will be ignored.</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_k</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">is_correct_tag</span><span class="p">(</span><span class="n">split_k</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                    <span class="k">if</span> <span class="n">split_k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;postcode&quot;</span> <span class="ow">and</span> <span class="n">is_right_postcode</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">]):</span>
-                        <span class="n">node</span><span class="p">[</span><span class="s2">&quot;postcode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">]</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">node</span><span class="p">[</span><span class="n">split_k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">]</span>
+                    <span class="n">node</span><span class="p">[</span><span class="n">split_k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">]</span>
                 <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_k</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">split_k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;addr&#39;</span> <span class="ow">and</span> <span class="n">is_correct_tag</span><span class="p">(</span><span class="n">split_k</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
                     <span class="n">address</span><span class="p">[</span><span class="n">split_k</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">]</span>
 
@@ -12063,24 +11990,20 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">process_map</span><span class="p">(</span><span class="n">file_in</span><span class="p">,</span> <span class="n">pretty</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
     <span class="n">file_out</span> <span class="o">=</span> <span class="s2">&quot;{0}.json&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_in</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-    
-    <span class="c1">#read the multiple places, compare every location if it has been in this string, then just skip this element</span>
-    <span class="n">multilocations</span> <span class="o">=</span> <span class="n">get_multiple_location</span><span class="p">(</span><span class="s1">&#39;multiple-location.txt&#39;</span><span class="p">)</span>
-    
     <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_out</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
         <span class="n">fo</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">ET</span><span class="o">.</span><span class="n">iterparse</span><span class="p">(</span><span class="n">file_in</span><span class="p">):</span>
             <span class="c1"># when I am testing data in my local enviroment, I let the dataset be smaller</span>
 <span class="c1">#             if count &gt; 10000:</span>
 <span class="c1">#                 break</span>
-            <span class="n">el</span> <span class="o">=</span> <span class="n">shape_element</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">multilocations</span><span class="p">)</span>
+            <span class="n">el</span> <span class="o">=</span> <span class="n">shape_element</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">el</span><span class="p">:</span>
                 <span class="c1">#data.append(el) the format of json file is very important</span>
                 <span class="k">if</span> <span class="n">pretty</span><span class="p">:</span>
@@ -12102,7 +12025,7 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># generate the josn format data which can be insert into a mongodb example</span>
@@ -12119,10 +12042,8 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Conclusion-of-Part-1:">Conclusion of Part 1:<a class="anchor-link" href="#Conclusion-of-Part-1:">&#182;</a></h3><p>As the code shows, I have added notes. While several tips I want to add are as follows:</p>
-<p>I find the part 1 and part 2 should be done alternately. When I clean the data by the first time, then I can insert these data into a MongoDB example, I can select some calculated results. Then I will find some problems with my cleaned data, for example, some wrong format postcode, a single location is multiple for several points, then I went back to clean the dataset by second time.</p>
-<h4 id="Suggestion-for-improving-the-dataset-and-data-analysis.">Suggestion for improving the dataset and data analysis.<a class="anchor-link" href="#Suggestion-for-improving-the-dataset-and-data-analysis.">&#182;</a></h4><p>As the review suggested, there are a lot of improvements from the users. So I searched something from MongoDB,from the pipeline "is_location_unique", I can find there are 49 multiple places, while these wrong location input are recorded by 8 users from "multiple_user_location", and the top 3 users contributed almost 85% of the errors, maybe they are not familiar with the dataset or the location devices. In addtion, if I calculate the error percent of their total input, that will be more persuasive. Also I selected the top 10 users in this dataset, the results can be seen by "users_count", which shows that these 10 users contributed 65% inputs of the whole dataset, while the first one recorded almost 20%, and there is no wrong location from his records. That means he is familiar with this city and the platform, we can set his input as standard when comes up with different formats.</p>
-<p>Also I notice that there is a tag providing BUS information, if there is more information about which bus stopping, that will be better, because people will know how they can go to this place from other place by bus. While it indeed brings work for data engineers, because they need to calculate the best route from one place to another.</p>
+<h3 id="Conclusion-of-Part-1:">Conclusion of Part 1:<a class="anchor-link" href="#Conclusion-of-Part-1:">&#182;</a></h3><p>As the code shows, I have added notes.While several tips I want to add are as follows:</p>
+<p>I notice that there is a tag providing BUS information, if there is more information about which bus stopping, that will be better, because people will know how they can go to this place from other place by bus. While it indeed brings work for data engineers, because they need to calculate the best route from one place to another.</p>
 <p>If there is more information such as open and close time, it will be more accurate for recommending.</p>
 
 </div>
@@ -12140,7 +12061,7 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
@@ -12156,7 +12077,7 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># insert the data into a collection</span>
@@ -12173,7 +12094,37 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#calculate the number of element</span>
+<span class="n">db</span><span class="o">.</span><span class="n">saint</span><span class="o">.</span><span class="n">find</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[15]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>416975</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">):</span>
@@ -12187,168 +12138,7 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># find out the different kinds of postcode, then figure out the wrong format</span>
-<span class="k">def</span> <span class="nf">different_postcode</span><span class="p">():</span>
-    <span class="n">pipeline</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;$match&quot;</span><span class="p">:{</span><span class="s2">&quot;address.postcode&quot;</span><span class="p">:{</span><span class="s2">&quot;$ne&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}}},</span>
-                <span class="p">{</span><span class="s2">&quot;$group&quot;</span><span class="p">:{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span><span class="s2">&quot;$address.postcode&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">:{</span><span class="s2">&quot;$sum&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}}]</span>
-    <span class="k">return</span> <span class="n">pipeline</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">different_postcode</span><span class="p">()</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="find-some-postcode-like-'55108-1003','MN-55430',-while-the-number-of-these-postcode-is-small,-so-what-I-do-is-to-skip-these-postcode">find some postcode like '55108-1003','MN 55430', while the number of these postcode is small, so what I do is to skip these postcode<a class="anchor-link" href="#find-some-postcode-like-'55108-1003','MN-55430',-while-the-number-of-these-postcode-is-small,-so-what-I-do-is-to-skip-these-postcode">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[47]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># find locations not unique</span>
-<span class="k">def</span> <span class="nf">is_location_unique</span><span class="p">():</span>
-    <span class="n">pipeline</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;$group&quot;</span><span class="p">:{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span><span class="s2">&quot;$pos&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">:{</span><span class="s2">&quot;$sum&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},</span>
-               <span class="p">{</span><span class="s2">&quot;$match&quot;</span><span class="p">:{</span><span class="s2">&quot;count&quot;</span><span class="p">:{</span><span class="s2">&quot;$gt&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},</span>
-               <span class="p">{</span><span class="s2">&quot;$group&quot;</span><span class="p">:{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span><span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">:{</span><span class="s2">&quot;$sum&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}}]</span>
-    <span class="k">return</span> <span class="n">pipeline</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[49]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">is_location_unique</span><span class="p">()</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">)</span>
-<span class="n">result</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[49]:</div>
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[{u&#39;_id&#39;: None, u&#39;count&#39;: 49}]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># find out the top 10 users who made more mistakes</span>
-<span class="k">def</span> <span class="nf">multiple_user_location</span><span class="p">():</span>
-    <span class="n">pipeline</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;$match&quot;</span><span class="p">:{</span><span class="s2">&quot;pos&quot;</span><span class="p">:{</span><span class="s2">&quot;$ne&quot;</span><span class="p">:</span><span class="bp">None</span><span class="p">}}},</span>
-                <span class="p">{</span><span class="s2">&quot;$group&quot;</span><span class="p">:{</span><span class="s2">&quot;_id&quot;</span><span class="p">:{</span><span class="s2">&quot;uid&quot;</span><span class="p">:</span> <span class="s2">&quot;$created.uid&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">:</span> <span class="s2">&quot;$pos&quot;</span><span class="p">},</span> <span class="s2">&quot;count&quot;</span><span class="p">:{</span><span class="s2">&quot;$sum&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},</span>
-                <span class="p">{</span><span class="s2">&quot;$match&quot;</span><span class="p">:{</span><span class="s2">&quot;count&quot;</span><span class="p">:{</span><span class="s2">&quot;$gt&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},</span>
-                <span class="p">{</span><span class="s2">&quot;$group&quot;</span><span class="p">:{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span><span class="s2">&quot;$_id.uid&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">:{</span><span class="s2">&quot;$sum&quot;</span><span class="p">:</span><span class="s2">&quot;$count&quot;</span><span class="p">}}},</span>
-                <span class="p">{</span><span class="s2">&quot;$sort&quot;</span><span class="p">:{</span><span class="s2">&quot;count&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">}},</span>
-                <span class="p">{</span><span class="s2">&quot;$limit&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}]</span>
-    <span class="k">return</span> <span class="n">pipeline</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[50]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># find these multiple places then insert them into a txt file</span>
-<span class="k">def</span> <span class="nf">find_multiple_location</span><span class="p">():</span>
-    <span class="n">pipeline</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;$group&quot;</span><span class="p">:{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span><span class="s2">&quot;$pos&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">:{</span><span class="s2">&quot;$sum&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},</span>
-               <span class="p">{</span><span class="s2">&quot;$match&quot;</span><span class="p">:{</span><span class="s2">&quot;count&quot;</span><span class="p">:{</span><span class="s2">&quot;$gt&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},</span>
-               <span class="p">{</span><span class="s2">&quot;$project&quot;</span><span class="p">:{</span><span class="s2">&quot;pos&quot;</span><span class="p">:</span><span class="s2">&quot;$pos&quot;</span><span class="p">}}]</span>
-    <span class="k">return</span> <span class="n">pipeline</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">find_multiple_location</span><span class="p">()</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[52]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># write code to insert these multiple places into a txt file, then go back to clean data again</span>
-<span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">file_out</span> <span class="o">=</span> <span class="s2">&quot;multiple-location.txt&quot;</span>
-<span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_out</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">pos</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]:</span>
-            <span class="n">fo</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#calculate the number of unique users</span>
@@ -12366,11 +12156,36 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#calculate the number of element</span>
-<span class="n">db</span><span class="o">.</span><span class="n">saint</span><span class="o">.</span><span class="n">find</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">unique_users</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -12381,34 +12196,15 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[42]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[27]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>406974</pre>
+<pre>{u&#39;_id&#39;: None, u&#39;count&#39;: 1399}</pre>
 </div>
 
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[55]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#calculate the top 10 users for recording</span>
-<span class="k">def</span> <span class="nf">users_count</span><span class="p">():</span>
-    <span class="n">pipeline</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;$match&quot;</span><span class="p">:{</span><span class="s2">&quot;created.uid&quot;</span><span class="p">:{</span><span class="s2">&quot;$ne&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}}},</span>
-                <span class="p">{</span><span class="s2">&quot;$group&quot;</span><span class="p">:{</span><span class="s2">&quot;_id&quot;</span><span class="p">:</span><span class="s2">&quot;$created.uid&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">:{</span><span class="s2">&quot;$sum&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},</span>
-                <span class="p">{</span><span class="s2">&quot;$sort&quot;</span><span class="p">:{</span><span class="s2">&quot;count&quot;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">}},</span>
-                <span class="p">{</span><span class="s2">&quot;$limit&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}]</span>
-    <span class="k">return</span> <span class="n">pipeline</span>
-</pre></div>
-
-</div>
 </div>
 </div>
 
@@ -12425,6 +12221,64 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </pre></div>
 
 </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">different_tags</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[30]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[{u&#39;_id&#39;: None, u&#39;count&#39;: 10001},
+ {u&#39;_id&#39;: u&#39;node&#39;, u&#39;count&#39;: 71270},
+ {u&#39;_id&#39;: u&#39;relation&#39;, u&#39;count&#39;: 2931},
+ {u&#39;_id&#39;: u&#39;way&#39;, u&#39;count&#39;: 332773}]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12449,6 +12303,100 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">different_highways</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[33]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[{u&#39;_id&#39;: u&#39;residential&#39;, u&#39;count&#39;: 67906},
+ {u&#39;_id&#39;: u&#39;service&#39;, u&#39;count&#39;: 51939},
+ {u&#39;_id&#39;: u&#39;bus_stop&#39;, u&#39;count&#39;: 14857},
+ {u&#39;_id&#39;: u&#39;footway&#39;, u&#39;count&#39;: 14473},
+ {u&#39;_id&#39;: u&#39;turning_circle&#39;, u&#39;count&#39;: 13290},
+ {u&#39;_id&#39;: u&#39;tertiary&#39;, u&#39;count&#39;: 9087},
+ {u&#39;_id&#39;: u&#39;path&#39;, u&#39;count&#39;: 5280},
+ {u&#39;_id&#39;: u&#39;traffic_signals&#39;, u&#39;count&#39;: 3957},
+ {u&#39;_id&#39;: u&#39;motorway_link&#39;, u&#39;count&#39;: 2877},
+ {u&#39;_id&#39;: u&#39;secondary&#39;, u&#39;count&#39;: 2622},
+ {u&#39;_id&#39;: u&#39;cycleway&#39;, u&#39;count&#39;: 2182},
+ {u&#39;_id&#39;: u&#39;crossing&#39;, u&#39;count&#39;: 2146},
+ {u&#39;_id&#39;: u&#39;motorway&#39;, u&#39;count&#39;: 1809},
+ {u&#39;_id&#39;: u&#39;primary&#39;, u&#39;count&#39;: 1093},
+ {u&#39;_id&#39;: u&#39;unclassified&#39;, u&#39;count&#39;: 782},
+ {u&#39;_id&#39;: u&#39;motorway_junction&#39;, u&#39;count&#39;: 691},
+ {u&#39;_id&#39;: u&#39;track&#39;, u&#39;count&#39;: 584},
+ {u&#39;_id&#39;: u&#39;trunk&#39;, u&#39;count&#39;: 513},
+ {u&#39;_id&#39;: u&#39;stop&#39;, u&#39;count&#39;: 483},
+ {u&#39;_id&#39;: u&#39;steps&#39;, u&#39;count&#39;: 449},
+ {u&#39;_id&#39;: u&#39;tertiary_link&#39;, u&#39;count&#39;: 397},
+ {u&#39;_id&#39;: u&#39;trunk_link&#39;, u&#39;count&#39;: 307},
+ {u&#39;_id&#39;: u&#39;secondary_link&#39;, u&#39;count&#39;: 301},
+ {u&#39;_id&#39;: u&#39;primary_link&#39;, u&#39;count&#39;: 215},
+ {u&#39;_id&#39;: u&#39;pedestrian&#39;, u&#39;count&#39;: 132},
+ {u&#39;_id&#39;: u&#39;mini_roundabout&#39;, u&#39;count&#39;: 121},
+ {u&#39;_id&#39;: u&#39;construction&#39;, u&#39;count&#39;: 111},
+ {u&#39;_id&#39;: u&#39;bridleway&#39;, u&#39;count&#39;: 92},
+ {u&#39;_id&#39;: u&#39;street_lamp&#39;, u&#39;count&#39;: 85},
+ {u&#39;_id&#39;: u&#39;living_street&#39;, u&#39;count&#39;: 78},
+ {u&#39;_id&#39;: u&#39;turning_loop&#39;, u&#39;count&#39;: 75},
+ {u&#39;_id&#39;: u&#39;proposed&#39;, u&#39;count&#39;: 61},
+ {u&#39;_id&#39;: u&#39;road&#39;, u&#39;count&#39;: 34},
+ {u&#39;_id&#39;: u&#39;corridor&#39;, u&#39;count&#39;: 25},
+ {u&#39;_id&#39;: u&#39;give_way&#39;, u&#39;count&#39;: 15},
+ {u&#39;_id&#39;: u&#39;raceway&#39;, u&#39;count&#39;: 12},
+ {u&#39;_id&#39;: u&#39;elevator&#39;, u&#39;count&#39;: 8},
+ {u&#39;_id&#39;: u&#39;passing_place&#39;, u&#39;count&#39;: 5},
+ {u&#39;_id&#39;: u&#39;rest_area&#39;, u&#39;count&#39;: 3},
+ {u&#39;_id&#39;: u&#39;platform&#39;, u&#39;count&#39;: 1}]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 <div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
@@ -12463,6 +12411,70 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </pre></div>
 
 </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">get_node_refs</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[36]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[{u&#39;_id&#39;: u&#39;130711268&#39;, u&#39;count&#39;: 1999},
+ {u&#39;_id&#39;: u&#39;40127978&#39;, u&#39;count&#39;: 1544},
+ {u&#39;_id&#39;: u&#39;147571320&#39;, u&#39;count&#39;: 1516},
+ {u&#39;_id&#39;: u&#39;130724182&#39;, u&#39;count&#39;: 1429},
+ {u&#39;_id&#39;: u&#39;40128078&#39;, u&#39;count&#39;: 1328},
+ {u&#39;_id&#39;: u&#39;415163548&#39;, u&#39;count&#39;: 1230},
+ {u&#39;_id&#39;: u&#39;47489483&#39;, u&#39;count&#39;: 1091},
+ {u&#39;_id&#39;: u&#39;136796601&#39;, u&#39;count&#39;: 1089},
+ {u&#39;_id&#39;: u&#39;60497361&#39;, u&#39;count&#39;: 973},
+ {u&#39;_id&#39;: u&#39;169168105&#39;, u&#39;count&#39;: 969}]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12505,6 +12517,1044 @@ I downloaded the data set from <a href="https://mapzen.com/data/metro-extracts/m
 </pre></div>
 
 </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[43]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[{u&#39;_id&#39;: ObjectId(&#39;5842590d24781100a435f995&#39;),
+  u&#39;created&#39;: {u&#39;changeset&#39;: u&#39;37972026&#39;,
+   u&#39;timestamp&#39;: u&#39;2016-03-21T10:02:35Z&#39;,
+   u&#39;uid&#39;: u&#39;145231&#39;,
+   u&#39;user&#39;: u&#39;woodpeck_repair&#39;,
+   u&#39;version&#39;: u&#39;7&#39;},
+  u&#39;id&#39;: u&#39;130711268&#39;,
+  u&#39;natural&#39;: u&#39;water&#39;,
+  u&#39;node_refs&#39;: [u&#39;1438972785&#39;,
+   u&#39;1438758393&#39;,
+   u&#39;1438154732&#39;,
+   u&#39;1438154733&#39;,
+   u&#39;1438154719&#39;,
+   u&#39;1438154737&#39;,
+   u&#39;1438154735&#39;,
+   u&#39;1438154751&#39;,
+   u&#39;1438154745&#39;,
+   u&#39;1438154746&#39;,
+   u&#39;1438154744&#39;,
+   u&#39;1438758371&#39;,
+   u&#39;1438154738&#39;,
+   u&#39;1438154731&#39;,
+   u&#39;1438154726&#39;,
+   u&#39;1438154752&#39;,
+   u&#39;1438154759&#39;,
+   u&#39;1438154768&#39;,
+   u&#39;1438154716&#39;,
+   u&#39;1438154742&#39;,
+   u&#39;1438154721&#39;,
+   u&#39;1438154764&#39;,
+   u&#39;1438154717&#39;,
+   u&#39;1438154763&#39;,
+   u&#39;1438154722&#39;,
+   u&#39;1438154762&#39;,
+   u&#39;1438154724&#39;,
+   u&#39;1438154766&#39;,
+   u&#39;1438154729&#39;,
+   u&#39;1438154743&#39;,
+   u&#39;1438758662&#39;,
+   u&#39;1438758540&#39;,
+   u&#39;1438758647&#39;,
+   u&#39;1438758387&#39;,
+   u&#39;1438758424&#39;,
+   u&#39;1438758417&#39;,
+   u&#39;1438758366&#39;,
+   u&#39;1438758391&#39;,
+   u&#39;1438758535&#39;,
+   u&#39;1438758372&#39;,
+   u&#39;1438758368&#39;,
+   u&#39;1438758578&#39;,
+   u&#39;1438758656&#39;,
+   u&#39;1438758399&#39;,
+   u&#39;1438758414&#39;,
+   u&#39;1438758651&#39;,
+   u&#39;1438758472&#39;,
+   u&#39;1438758474&#39;,
+   u&#39;1438758377&#39;,
+   u&#39;1438758394&#39;,
+   u&#39;1438758444&#39;,
+   u&#39;1438758493&#39;,
+   u&#39;1438758511&#39;,
+   u&#39;1438758436&#39;,
+   u&#39;1438758498&#39;,
+   u&#39;1438758657&#39;,
+   u&#39;1438758659&#39;,
+   u&#39;1438758389&#39;,
+   u&#39;1438758404&#39;,
+   u&#39;1438758465&#39;,
+   u&#39;1438758370&#39;,
+   u&#39;1438758470&#39;,
+   u&#39;1438758369&#39;,
+   u&#39;1438758429&#39;,
+   u&#39;1438758554&#39;,
+   u&#39;1438758383&#39;,
+   u&#39;1438758460&#39;,
+   u&#39;1438758382&#39;,
+   u&#39;1438758653&#39;,
+   u&#39;1438758576&#39;,
+   u&#39;1438758440&#39;,
+   u&#39;1438758374&#39;,
+   u&#39;1438758443&#39;,
+   u&#39;1438758542&#39;,
+   u&#39;1438758519&#39;,
+   u&#39;1438758425&#39;,
+   u&#39;1438758560&#39;,
+   u&#39;1438758556&#39;,
+   u&#39;1438758459&#39;,
+   u&#39;1438758454&#39;,
+   u&#39;1438758458&#39;,
+   u&#39;1438758431&#39;,
+   u&#39;1438758646&#39;,
+   u&#39;1438758423&#39;,
+   u&#39;1438758571&#39;,
+   u&#39;1438758633&#39;,
+   u&#39;1438758411&#39;,
+   u&#39;1438758450&#39;,
+   u&#39;1438758641&#39;,
+   u&#39;1438758407&#39;,
+   u&#39;1438758488&#39;,
+   u&#39;1438758485&#39;,
+   u&#39;1438758500&#39;,
+   u&#39;1438758462&#39;,
+   u&#39;1438758408&#39;,
+   u&#39;1438758402&#39;,
+   u&#39;1438758456&#39;,
+   u&#39;1438758427&#39;,
+   u&#39;1438758600&#39;,
+   u&#39;1438758616&#39;,
+   u&#39;1438758544&#39;,
+   u&#39;1438758478&#39;,
+   u&#39;1438758660&#39;,
+   u&#39;1438758593&#39;,
+   u&#39;1438758438&#39;,
+   u&#39;1438758469&#39;,
+   u&#39;1438758649&#39;,
+   u&#39;1438758574&#39;,
+   u&#39;1438758531&#39;,
+   u&#39;1438758467&#39;,
+   u&#39;1438758415&#39;,
+   u&#39;1438758587&#39;,
+   u&#39;1438758668&#39;,
+   u&#39;1438758524&#39;,
+   u&#39;1438758652&#39;,
+   u&#39;1438758433&#39;,
+   u&#39;1438758439&#39;,
+   u&#39;1438758533&#39;,
+   u&#39;1438758655&#39;,
+   u&#39;1438758375&#39;,
+   u&#39;1438758613&#39;,
+   u&#39;1438758622&#39;,
+   u&#39;1438758386&#39;,
+   u&#39;1438758570&#39;,
+   u&#39;1438758666&#39;,
+   u&#39;1438758669&#39;,
+   u&#39;1438758631&#39;,
+   u&#39;1438758504&#39;,
+   u&#39;1438758648&#39;,
+   u&#39;1438758494&#39;,
+   u&#39;1438758475&#39;,
+   u&#39;1438758432&#39;,
+   u&#39;1438758567&#39;,
+   u&#39;1438758449&#39;,
+   u&#39;1438758602&#39;,
+   u&#39;1438758537&#39;,
+   u&#39;1438758418&#39;,
+   u&#39;1438758437&#39;,
+   u&#39;1438758611&#39;,
+   u&#39;1438758496&#39;,
+   u&#39;1438758479&#39;,
+   u&#39;1438758558&#39;,
+   u&#39;1438758476&#39;,
+   u&#39;1438758609&#39;,
+   u&#39;1438758434&#39;,
+   u&#39;1438758413&#39;,
+   u&#39;1438758490&#39;,
+   u&#39;1438758477&#39;,
+   u&#39;1438758464&#39;,
+   u&#39;1438758376&#39;,
+   u&#39;1438758398&#39;,
+   u&#39;1438758658&#39;,
+   u&#39;1438758461&#39;,
+   u&#39;1438758546&#39;,
+   u&#39;1438758483&#39;,
+   u&#39;1438758527&#39;,
+   u&#39;1438758650&#39;,
+   u&#39;1438758529&#39;,
+   u&#39;1438758420&#39;,
+   u&#39;1438758426&#39;,
+   u&#39;1438758581&#39;,
+   u&#39;1438758626&#39;,
+   u&#39;1438758617&#39;,
+   u&#39;1438758521&#39;,
+   u&#39;1438758555&#39;,
+   u&#39;1438758435&#39;,
+   u&#39;1438758620&#39;,
+   u&#39;1438758639&#39;,
+   u&#39;1438758580&#39;,
+   u&#39;1438758388&#39;,
+   u&#39;1438758625&#39;,
+   u&#39;1438758667&#39;,
+   u&#39;1438758446&#39;,
+   u&#39;1438758548&#39;,
+   u&#39;1438758428&#39;,
+   u&#39;1438758367&#39;,
+   u&#39;1438758442&#39;,
+   u&#39;1438758380&#39;,
+   u&#39;1438758562&#39;,
+   u&#39;1438758378&#39;,
+   u&#39;1438758397&#39;,
+   u&#39;1438758419&#39;,
+   u&#39;1438758637&#39;,
+   u&#39;1438758421&#39;,
+   u&#39;1438758506&#39;,
+   u&#39;1438758585&#39;,
+   u&#39;1438758400&#39;,
+   u&#39;1438758392&#39;,
+   u&#39;1438758403&#39;,
+   u&#39;1438758539&#39;,
+   u&#39;1438758595&#39;,
+   u&#39;1438758468&#39;,
+   u&#39;1438758409&#39;,
+   u&#39;1438758664&#39;,
+   u&#39;1438758665&#39;,
+   u&#39;1438758405&#39;,
+   u&#39;1438758502&#39;,
+   u&#39;1438758471&#39;,
+   u&#39;1438758513&#39;,
+   u&#39;1438758492&#39;,
+   u&#39;1438758481&#39;,
+   u&#39;1438758451&#39;,
+   u&#39;1438758589&#39;,
+   u&#39;1438758517&#39;,
+   u&#39;1438758509&#39;,
+   u&#39;1438758525&#39;,
+   u&#39;1438758515&#39;,
+   u&#39;1438758422&#39;,
+   u&#39;1438758487&#39;,
+   u&#39;1438758373&#39;,
+   u&#39;1438758379&#39;,
+   u&#39;1438758430&#39;,
+   u&#39;1438758381&#39;,
+   u&#39;1438758628&#39;,
+   u&#39;1438758550&#39;,
+   u&#39;1438758591&#39;,
+   u&#39;1438758445&#39;,
+   u&#39;1438758412&#39;,
+   u&#39;1438758448&#39;,
+   u&#39;1438758416&#39;,
+   u&#39;1438758453&#39;,
+   u&#39;1438758466&#39;,
+   u&#39;1438758463&#39;,
+   u&#39;1438758457&#39;,
+   u&#39;1438758663&#39;,
+   u&#39;1438758396&#39;,
+   u&#39;1438758395&#39;,
+   u&#39;1438758441&#39;,
+   u&#39;1438758601&#39;,
+   u&#39;1438758384&#39;,
+   u&#39;1438758661&#39;,
+   u&#39;1438758401&#39;,
+   u&#39;1438758452&#39;,
+   u&#39;1438758406&#39;,
+   u&#39;1438758607&#39;,
+   u&#39;1438758385&#39;,
+   u&#39;1438758473&#39;,
+   u&#39;1438758619&#39;,
+   u&#39;1438758632&#39;,
+   u&#39;1438758572&#39;,
+   u&#39;1438758597&#39;,
+   u&#39;1438758635&#39;,
+   u&#39;1438768326&#39;,
+   u&#39;1438768529&#39;,
+   u&#39;1438767958&#39;,
+   u&#39;1438767933&#39;,
+   u&#39;1438767854&#39;,
+   u&#39;1438768107&#39;,
+   u&#39;1438768096&#39;,
+   u&#39;1438768176&#39;,
+   u&#39;1438768347&#39;,
+   u&#39;1438768249&#39;,
+   u&#39;1438767876&#39;,
+   u&#39;1438768513&#39;,
+   u&#39;1438768545&#39;,
+   u&#39;1438767850&#39;,
+   u&#39;1438768013&#39;,
+   u&#39;1438767846&#39;,
+   u&#39;1438768261&#39;,
+   u&#39;1438767878&#39;,
+   u&#39;1438768438&#39;,
+   u&#39;1438768331&#39;,
+   u&#39;1438768047&#39;,
+   u&#39;1438768498&#39;,
+   u&#39;1438768087&#39;,
+   u&#39;1438768482&#39;,
+   u&#39;1438768025&#39;,
+   u&#39;1438768333&#39;,
+   u&#39;1438768258&#39;,
+   u&#39;1438768056&#39;,
+   u&#39;1438768063&#39;,
+   u&#39;1438767976&#39;,
+   u&#39;1438767967&#39;,
+   u&#39;1438768335&#39;,
+   u&#39;1438767952&#39;,
+   u&#39;1438768065&#39;,
+   u&#39;1438768283&#39;,
+   u&#39;1438768357&#39;,
+   u&#39;1438768104&#39;,
+   u&#39;1438768137&#39;,
+   u&#39;1438768032&#39;,
+   u&#39;1438768469&#39;,
+   u&#39;1438768054&#39;,
+   u&#39;1438768253&#39;,
+   u&#39;1438768290&#39;,
+   u&#39;1438768274&#39;,
+   u&#39;1438768288&#39;,
+   u&#39;1438768528&#39;,
+   u&#39;1438768502&#39;,
+   u&#39;1438768144&#39;,
+   u&#39;1438768543&#39;,
+   u&#39;1438768105&#39;,
+   u&#39;1438768026&#39;,
+   u&#39;1438768007&#39;,
+   u&#39;1438768084&#39;,
+   u&#39;1438768051&#39;,
+   u&#39;1438767980&#39;,
+   u&#39;1438767978&#39;,
+   u&#39;1438768458&#39;,
+   u&#39;1438768060&#39;,
+   u&#39;1438768064&#39;,
+   u&#39;1438768138&#39;,
+   u&#39;1438768210&#39;,
+   u&#39;1438768148&#39;,
+   u&#39;1438768116&#39;,
+   u&#39;1438768483&#39;,
+   u&#39;1438768515&#39;,
+   u&#39;1438768073&#39;,
+   u&#39;1438768362&#39;,
+   u&#39;1438768544&#39;,
+   u&#39;1438768291&#39;,
+   u&#39;1438768561&#39;,
+   u&#39;1438768460&#39;,
+   u&#39;1438768532&#39;,
+   u&#39;1438768078&#39;,
+   u&#39;1438767871&#39;,
+   u&#39;1438767875&#39;,
+   u&#39;1438768074&#39;,
+   u&#39;1438768061&#39;,
+   u&#39;1438768416&#39;,
+   u&#39;1438768485&#39;,
+   u&#39;1438768534&#39;,
+   u&#39;1438768101&#39;,
+   u&#39;1438768048&#39;,
+   u&#39;1438768420&#39;,
+   u&#39;1438768509&#39;,
+   u&#39;1438767932&#39;,
+   u&#39;1438768005&#39;,
+   u&#39;1438768029&#39;,
+   u&#39;1438768371&#39;,
+   u&#39;1438768263&#39;,
+   u&#39;1438768227&#39;,
+   u&#39;1438767969&#39;,
+   u&#39;1438768384&#39;,
+   u&#39;1438767906&#39;,
+   u&#39;1438767914&#39;,
+   u&#39;1438768072&#39;,
+   u&#39;1438768345&#39;,
+   u&#39;1438768059&#39;,
+   u&#39;1438768280&#39;,
+   u&#39;1438768083&#39;,
+   u&#39;1438767865&#39;,
+   u&#39;1438768229&#39;,
+   u&#39;1438768053&#39;,
+   u&#39;1438768079&#39;,
+   u&#39;1438768251&#39;,
+   u&#39;1438767898&#39;,
+   u&#39;1438767984&#39;,
+   u&#39;1438768038&#39;,
+   u&#39;1438768180&#39;,
+   u&#39;1438768080&#39;,
+   u&#39;1438767869&#39;,
+   u&#39;1438767888&#39;,
+   u&#39;1438768049&#39;,
+   u&#39;1438768465&#39;,
+   u&#39;1438767861&#39;,
+   u&#39;1438768206&#39;,
+   u&#39;1438767892&#39;,
+   u&#39;1438767923&#39;,
+   u&#39;1438768320&#39;,
+   u&#39;1438768471&#39;,
+   u&#39;1438767889&#39;,
+   u&#39;1438768527&#39;,
+   u&#39;1438767845&#39;,
+   u&#39;1438768050&#39;,
+   u&#39;1438768325&#39;,
+   u&#39;1438768208&#39;,
+   u&#39;1438768535&#39;,
+   u&#39;1438767847&#39;,
+   u&#39;1438768338&#39;,
+   u&#39;1438768136&#39;,
+   u&#39;1438768067&#39;,
+   u&#39;1438767983&#39;,
+   u&#39;1438767911&#39;,
+   u&#39;1438768537&#39;,
+   u&#39;1438768359&#39;,
+   u&#39;1438768255&#39;,
+   u&#39;1438768246&#39;,
+   u&#39;1438768142&#39;,
+   u&#39;1438768394&#39;,
+   u&#39;1438767962&#39;,
+   u&#39;1438767968&#39;,
+   u&#39;1438768306&#39;,
+   u&#39;1438768369&#39;,
+   u&#39;1438768118&#39;,
+   u&#39;1438768069&#39;,
+   u&#39;1438767935&#39;,
+   u&#39;1438767917&#39;,
+   u&#39;1438768307&#39;,
+   u&#39;1438767954&#39;,
+   u&#39;1438768462&#39;,
+   u&#39;1438768248&#39;,
+   u&#39;1438768134&#39;,
+   u&#39;1438768109&#39;,
+   u&#39;1438768070&#39;,
+   u&#39;1438768558&#39;,
+   u&#39;1438768009&#39;,
+   u&#39;1438768467&#39;,
+   u&#39;1438768556&#39;,
+   u&#39;1438767931&#39;,
+   u&#39;1438767960&#39;,
+   u&#39;1438767925&#39;,
+   u&#39;1438767927&#39;,
+   u&#39;1438768375&#39;,
+   u&#39;1438768086&#39;,
+   u&#39;1438768085&#39;,
+   u&#39;1438768045&#39;,
+   u&#39;1438768010&#39;,
+   u&#39;1438767856&#39;,
+   u&#39;1438768526&#39;,
+   u&#39;1438768023&#39;,
+   u&#39;1438768170&#39;,
+   u&#39;1438768310&#39;,
+   u&#39;1438768219&#39;,
+   u&#39;1438768215&#39;,
+   u&#39;1438767903&#39;,
+   u&#39;1438768187&#39;,
+   u&#39;1438767896&#39;,
+   u&#39;1438768039&#39;,
+   u&#39;1438768058&#39;,
+   u&#39;1438768062&#39;,
+   u&#39;1438768071&#39;,
+   u&#39;1438768316&#39;,
+   u&#39;1438768033&#39;,
+   u&#39;1438768012&#39;,
+   u&#39;1438768222&#39;,
+   u&#39;1438768036&#39;,
+   u&#39;1438768418&#39;,
+   u&#39;1438768424&#39;,
+   u&#39;1438768042&#39;,
+   u&#39;1438767940&#39;,
+   u&#39;1438768523&#39;,
+   u&#39;1438767894&#39;,
+   u&#39;1438768364&#39;,
+   u&#39;1438768342&#39;,
+   u&#39;1438768055&#39;,
+   u&#39;1438768100&#39;,
+   u&#39;1438768098&#39;,
+   u&#39;1438768094&#39;,
+   u&#39;1438767873&#39;,
+   u&#39;1438768358&#39;,
+   u&#39;1438768175&#39;,
+   u&#39;1438768431&#39;,
+   u&#39;1438768456&#39;,
+   u&#39;1438768088&#39;,
+   u&#39;1438767981&#39;,
+   u&#39;1438767893&#39;,
+   u&#39;1438768093&#39;,
+   u&#39;1438768318&#39;,
+   u&#39;1438768011&#39;,
+   u&#39;1438768068&#39;,
+   u&#39;1438768365&#39;,
+   u&#39;1438768289&#39;,
+   u&#39;1438768312&#39;,
+   u&#39;1438767877&#39;,
+   u&#39;1438767964&#39;,
+   u&#39;1438768361&#39;,
+   u&#39;1438768322&#39;,
+   u&#39;1438768542&#39;,
+   u&#39;1438768194&#39;,
+   u&#39;1438768265&#39;,
+   u&#39;1438768560&#39;,
+   u&#39;1438768190&#39;,
+   u&#39;1438768285&#39;,
+   u&#39;1438767970&#39;,
+   u&#39;1438768427&#39;,
+   u&#39;1438768217&#39;,
+   u&#39;1438767904&#39;,
+   u&#39;1438768337&#39;,
+   u&#39;1438768103&#39;,
+   u&#39;1438768020&#39;,
+   u&#39;1438767848&#39;,
+   u&#39;1438768140&#39;,
+   u&#39;1438768014&#39;,
+   u&#39;1438768399&#39;,
+   u&#39;1438768106&#39;,
+   u&#39;1438767863&#39;,
+   u&#39;1438768113&#39;,
+   u&#39;1438767995&#39;,
+   u&#39;1438768324&#39;,
+   u&#39;1438767879&#39;,
+   u&#39;1438767867&#39;,
+   u&#39;1438768121&#39;,
+   u&#39;1438768017&#39;,
+   u&#39;1438768276&#39;,
+   u&#39;1438768003&#39;,
+   u&#39;1438768340&#39;,
+   u&#39;1438768001&#39;,
+   u&#39;1438768539&#39;,
+   u&#39;1438768173&#39;,
+   u&#39;1438768135&#39;,
+   u&#39;1438768089&#39;,
+   u&#39;1438768179&#39;,
+   u&#39;1438768151&#39;,
+   u&#39;1438768380&#39;,
+   u&#39;1438767956&#39;,
+   u&#39;1438768500&#39;,
+   u&#39;1438768490&#39;,
+   u&#39;1438768487&#39;,
+   u&#39;1438768066&#39;,
+   u&#39;1438768123&#39;,
+   u&#39;1438768034&#39;,
+   u&#39;1438767985&#39;,
+   u&#39;1438768027&#39;,
+   u&#39;1438768031&#39;,
+   u&#39;1438768386&#39;,
+   u&#39;1438768097&#39;,
+   u&#39;1438768181&#39;,
+   u&#39;1438768530&#39;,
+   u&#39;1438768021&#39;,
+   u&#39;1438767891&#39;,
+   u&#39;1438768040&#39;,
+   u&#39;1438768102&#39;,
+   u&#39;1438768343&#39;,
+   u&#39;1438767920&#39;,
+   u&#39;1438768429&#39;,
+   u&#39;1438768092&#39;,
+   u&#39;1438768076&#39;,
+   u&#39;1438768146&#39;,
+   u&#39;1438768453&#39;,
+   u&#39;1438767930&#39;,
+   u&#39;1438768473&#39;,
+   u&#39;1438768108&#39;,
+   u&#39;1438768356&#39;,
+   u&#39;1438768041&#39;,
+   u&#39;1438768267&#39;,
+   u&#39;1438768494&#39;,
+   u&#39;1438768090&#39;,
+   u&#39;1438768178&#39;,
+   u&#39;1438768213&#39;,
+   u&#39;1438768046&#39;,
+   u&#39;1438768388&#39;,
+   u&#39;1438768518&#39;,
+   u&#39;1438768057&#39;,
+   u&#39;1438767993&#39;,
+   u&#39;1438767880&#39;,
+   u&#39;1438768378&#39;,
+   u&#39;1438768412&#39;,
+   u&#39;1438768341&#39;,
+   u&#39;1438768207&#39;,
+   u&#39;1438768124&#39;,
+   u&#39;1438768360&#39;,
+   u&#39;1438768286&#39;,
+   u&#39;1438767989&#39;,
+   u&#39;1438768016&#39;,
+   u&#39;1438768043&#39;,
+   u&#39;1438768414&#39;,
+   u&#39;1438768401&#39;,
+   u&#39;1438767890&#39;,
+   u&#39;1438768282&#39;,
+   u&#39;1438768451&#39;,
+   u&#39;1438768367&#39;,
+   u&#39;1438768081&#39;,
+   u&#39;1438768225&#39;,
+   u&#39;1438767852&#39;,
+   u&#39;1438768397&#39;,
+   u&#39;1438768044&#39;,
+   u&#39;1438768052&#39;,
+   u&#39;1438768382&#39;,
+   u&#39;1438768435&#39;,
+   u&#39;1438768484&#39;,
+   u&#39;1438767966&#39;,
+   u&#39;1438768030&#39;,
+   u&#39;1438767950&#39;,
+   u&#39;1438768028&#39;,
+   u&#39;1438768463&#39;,
+   u&#39;1438768492&#39;,
+   u&#39;1438768501&#39;,
+   u&#39;1438768496&#39;,
+   u&#39;1438768133&#39;,
+   u&#39;1438768422&#39;,
+   u&#39;1438768095&#39;,
+   u&#39;1438768037&#39;,
+   u&#39;1438768077&#39;,
+   u&#39;1438768511&#39;,
+   u&#39;1438768122&#39;,
+   u&#39;1438768376&#39;,
+   u&#39;1438768314&#39;,
+   u&#39;1438768520&#39;,
+   u&#39;1438767982&#39;,
+   u&#39;1438768082&#39;,
+   u&#39;1438768185&#39;,
+   u&#39;1438768447&#39;,
+   u&#39;1438768524&#39;,
+   u&#39;1438768110&#39;,
+   u&#39;1438768111&#39;,
+   u&#39;1438768541&#39;,
+   u&#39;1438768355&#39;,
+   u&#39;1438767938&#39;,
+   u&#39;1438768553&#39;,
+   u&#39;1438768514&#39;,
+   u&#39;1438768433&#39;,
+   u&#39;1438768035&#39;,
+   u&#39;1438768231&#39;,
+   u&#39;1438767900&#39;,
+   u&#39;1438768022&#39;,
+   u&#39;1438767991&#39;,
+   u&#39;1438768259&#39;,
+   u&#39;1438768344&#39;,
+   u&#39;1438768559&#39;,
+   u&#39;1438767999&#39;,
+   u&#39;1438768278&#39;,
+   u&#39;1438768024&#39;,
+   u&#39;1438768250&#39;,
+   u&#39;1438768517&#39;,
+   u&#39;1438768339&#39;,
+   u&#39;1438768091&#39;,
+   u&#39;1438768099&#39;,
+   u&#39;1438768516&#39;,
+   u&#39;1438768390&#39;,
+   u&#39;1438768019&#39;,
+   u&#39;1438768018&#39;,
+   u&#39;1438768015&#39;,
+   u&#39;1438768287&#39;,
+   u&#39;1438768125&#39;,
+   u&#39;1438768120&#39;,
+   u&#39;1438767987&#39;,
+   u&#39;1438768154&#39;,
+   u&#39;1438774626&#39;,
+   u&#39;1438774524&#39;,
+   u&#39;1438774534&#39;,
+   u&#39;1438774575&#39;,
+   u&#39;1438774481&#39;,
+   u&#39;1438774362&#39;,
+   u&#39;1438774467&#39;,
+   u&#39;1438774470&#39;,
+   u&#39;1438774536&#39;,
+   u&#39;1438774609&#39;,
+   u&#39;1438774565&#39;,
+   u&#39;1438774715&#39;,
+   u&#39;1438774432&#39;,
+   u&#39;1438774584&#39;,
+   u&#39;1438774629&#39;,
+   u&#39;1438774631&#39;,
+   u&#39;1438774482&#39;,
+   u&#39;1438774721&#39;,
+   u&#39;1438774345&#39;,
+   u&#39;1438774496&#39;,
+   u&#39;1438774607&#39;,
+   u&#39;1438774564&#39;,
+   u&#39;1438774562&#39;,
+   u&#39;1438774690&#39;,
+   u&#39;1438774356&#39;,
+   u&#39;1438774433&#39;,
+   u&#39;1438774375&#39;,
+   u&#39;1438774572&#39;,
+   u&#39;1438774573&#39;,
+   u&#39;1438774486&#39;,
+   u&#39;1438774719&#39;,
+   u&#39;1438774427&#39;,
+   u&#39;1438774396&#39;,
+   u&#39;1438774475&#39;,
+   u&#39;1438774343&#39;,
+   u&#39;1438774495&#39;,
+   u&#39;1438774418&#39;,
+   u&#39;1438774484&#39;,
+   u&#39;1438774414&#39;,
+   u&#39;1438774498&#39;,
+   u&#39;1438774595&#39;,
+   u&#39;1438774487&#39;,
+   u&#39;1438774490&#39;,
+   u&#39;1438774494&#39;,
+   u&#39;1438774493&#39;,
+   u&#39;1438774714&#39;,
+   u&#39;1438774604&#39;,
+   u&#39;1438774563&#39;,
+   u&#39;1438774485&#39;,
+   u&#39;1438774446&#39;,
+   u&#39;1438774339&#39;,
+   u&#39;1438774403&#39;,
+   u&#39;1438774625&#39;,
+   u&#39;1438774663&#39;,
+   u&#39;1438774630&#39;,
+   u&#39;1438774676&#39;,
+   u&#39;1438774717&#39;,
+   u&#39;1438774501&#39;,
+   u&#39;1438774616&#39;,
+   u&#39;1438774622&#39;,
+   u&#39;1438774617&#39;,
+   u&#39;1438774678&#39;,
+   u&#39;1438774546&#39;,
+   u&#39;1438774712&#39;,
+   u&#39;1438774710&#39;,
+   u&#39;1438774380&#39;,
+   u&#39;1438774558&#39;,
+   u&#39;1438774529&#39;,
+   u&#39;1438774610&#39;,
+   u&#39;1438774430&#39;,
+   u&#39;1438774453&#39;,
+   u&#39;1438774379&#39;,
+   u&#39;1438774450&#39;,
+   u&#39;1438774378&#39;,
+   u&#39;1438774347&#39;,
+   u&#39;1438774461&#39;,
+   u&#39;1438774360&#39;,
+   u&#39;1438774395&#39;,
+   u&#39;1438774440&#39;,
+   u&#39;1438774686&#39;,
+   u&#39;1438774649&#39;,
+   u&#39;1438774628&#39;,
+   u&#39;1438774593&#39;,
+   u&#39;1438774367&#39;,
+   u&#39;1438774471&#39;,
+   u&#39;1438774585&#39;,
+   u&#39;1438774574&#39;,
+   u&#39;1438774451&#39;,
+   u&#39;1438774569&#39;,
+   u&#39;1438774514&#39;,
+   u&#39;1438774352&#39;,
+   u&#39;1438774405&#39;,
+   u&#39;1438774392&#39;,
+   u&#39;1438774535&#39;,
+   u&#39;1438774384&#39;,
+   u&#39;1438774419&#39;,
+   u&#39;1438774404&#39;,
+   u&#39;1438774350&#39;,
+   u&#39;1438774683&#39;,
+   u&#39;1438774579&#39;,
+   u&#39;1438774382&#39;,
+   u&#39;1438774507&#39;,
+   u&#39;1438774473&#39;,
+   u&#39;1438774365&#39;,
+   u&#39;1438774642&#39;,
+   u&#39;1438774643&#39;,
+   u&#39;1438774577&#39;,
+   u&#39;1438774644&#39;,
+   u&#39;1438774366&#39;,
+   u&#39;1438774561&#39;,
+   u&#39;1438774597&#39;,
+   u&#39;1438774665&#39;,
+   u&#39;1438774582&#39;,
+   u&#39;1438774376&#39;,
+   u&#39;1438774632&#39;,
+   u&#39;1438774439&#39;,
+   u&#39;1438774413&#39;,
+   u&#39;1438774370&#39;,
+   u&#39;1438774654&#39;,
+   u&#39;1438774438&#39;,
+   u&#39;1438774381&#39;,
+   u&#39;1438774354&#39;,
+   u&#39;1438774590&#39;,
+   u&#39;1438774363&#39;,
+   u&#39;1438774589&#39;,
+   u&#39;1438774505&#39;,
+   u&#39;1438774711&#39;,
+   u&#39;1438774557&#39;,
+   u&#39;1438774578&#39;,
+   u&#39;1438774479&#39;,
+   u&#39;1438774620&#39;,
+   u&#39;1438774441&#39;,
+   u&#39;1438774596&#39;,
+   u&#39;1438774555&#39;,
+   u&#39;1438774457&#39;,
+   u&#39;1438774613&#39;,
+   u&#39;1438774526&#39;,
+   u&#39;1438774506&#39;,
+   u&#39;1438774544&#39;,
+   u&#39;1438774541&#39;,
+   u&#39;1438774346&#39;,
+   u&#39;1438774650&#39;,
+   u&#39;1438774653&#39;,
+   u&#39;1438774651&#39;,
+   u&#39;1438774647&#39;,
+   u&#39;1438774520&#39;,
+   u&#39;1438774344&#39;,
+   u&#39;1438774429&#39;,
+   u&#39;1438774671&#39;,
+   u&#39;1438774679&#39;,
+   u&#39;1438774426&#39;,
+   u&#39;1438774489&#39;,
+   u&#39;1438774459&#39;,
+   u&#39;1438774348&#39;,
+   u&#39;1438774538&#39;,
+   u&#39;1438774452&#39;,
+   u&#39;1438774518&#39;,
+   u&#39;1438774559&#39;,
+   u&#39;1438774522&#39;,
+   u&#39;1438774545&#39;,
+   u&#39;1438774528&#39;,
+   u&#39;1438774669&#39;,
+   u&#39;1438774599&#39;,
+   u&#39;1438774550&#39;,
+   u&#39;1438774411&#39;,
+   u&#39;1438774517&#39;,
+   u&#39;1438774552&#39;,
+   u&#39;1438774662&#39;,
+   u&#39;1438774525&#39;,
+   u&#39;1438774397&#39;,
+   u&#39;1438774390&#39;,
+   u&#39;1438774463&#39;,
+   u&#39;1438774398&#39;,
+   u&#39;1438774707&#39;,
+   u&#39;1438774431&#39;,
+   u&#39;1438774458&#39;,
+   u&#39;1438774560&#39;,
+   u&#39;1438774386&#39;,
+   u&#39;1438774425&#39;,
+   u&#39;1438774406&#39;,
+   u&#39;1438774681&#39;,
+   u&#39;1438774464&#39;,
+   u&#39;1438774615&#39;,
+   u&#39;1438774614&#39;,
+   u&#39;1438774567&#39;,
+   u&#39;1438774387&#39;,
+   u&#39;1438774477&#39;,
+   u&#39;1438774383&#39;,
+   u&#39;1438774619&#39;,
+   u&#39;1438774358&#39;,
+   u&#39;1438774417&#39;,
+   u&#39;1438774521&#39;,
+   u&#39;1438774407&#39;,
+   u&#39;1438774592&#39;,
+   u&#39;1438774658&#39;,
+   u&#39;1438774542&#39;,
+   u&#39;1438774353&#39;,
+   u&#39;1438774549&#39;,
+   u&#39;1438774627&#39;,
+   u&#39;1438774583&#39;,
+   u&#39;1438774531&#39;,
+   u&#39;1438774385&#39;,
+   u&#39;1438774410&#39;,
+   u&#39;1438774510&#39;,
+   u&#39;1438774341&#39;,
+   u&#39;1438774722&#39;,
+   u&#39;1438774448&#39;,
+   u&#39;1438774400&#39;,
+   u&#39;1438774399&#39;,
+   u&#39;1438774374&#39;,
+   u&#39;1438774447&#39;,
+   u&#39;1438774553&#39;,
+   u&#39;1438774408&#39;,
+   u&#39;1438774624&#39;,
+   u&#39;1438774621&#39;,
+   u&#39;1438774420&#39;,
+   u&#39;1438774696&#39;,
+   u&#39;1438774434&#39;,
+   u&#39;1438774618&#39;,
+   u&#39;1438774415&#39;,
+   u&#39;1438774539&#39;,
+   u&#39;1438774566&#39;,
+   u&#39;1438774637&#39;,
+   u&#39;1438774623&#39;,
+   u&#39;1438774694&#39;,
+   u&#39;1438774401&#39;,
+   u&#39;1438774460&#39;,
+   u&#39;1438774580&#39;,
+   u&#39;1438774359&#39;,
+   u&#39;1438774668&#39;,
+   u&#39;1438774667&#39;,
+   u&#39;1438774372&#39;,
+   u&#39;1438774511&#39;,
+   u&#39;1438774502&#39;,
+   u&#39;1438774402&#39;,
+   u&#39;1438774503&#39;,
+   u&#39;1438774516&#39;,
+   u&#39;1438774655&#39;,
+   u&#39;1438774724&#39;,
+   u&#39;1438774675&#39;,
+   u&#39;1438774412&#39;,
+   u&#39;1438774394&#39;,
+   u&#39;1438774512&#39;,
+   u&#39;1438774349&#39;,
+   u&#39;1438774723&#39;,
+   u&#39;1438774674&#39;,
+   u&#39;1438774635&#39;,
+   u&#39;1438774648&#39;,
+   u&#39;1438774355&#39;,
+   u&#39;1438774422&#39;,
+   u&#39;1438774543&#39;,
+   u&#39;1438774708&#39;,
+   u&#39;1438774598&#39;,
+   u&#39;1438774636&#39;,
+   u&#39;1438774594&#39;,
+   u&#39;1438774442&#39;,
+   u&#39;1438774548&#39;,
+   u&#39;1438774340&#39;,
+   u&#39;1438774435&#39;,
+   u&#39;1438774449&#39;,
+   u&#39;1438774660&#39;,
+   u&#39;1438774508&#39;,
+   u&#39;1438774652&#39;,
+   u&#39;1438774556&#39;,
+   u&#39;1438774672&#39;,
+   u&#39;1438774639&#39;,
+   u&#39;1438774483&#39;,
+   u&#39;1438774657&#39;,
+   u&#39;1438774393&#39;,
+   u&#39;1438774646&#39;,
+   u&#39;1438774693&#39;,
+   u&#39;1438774371&#39;,
+   u&#39;1438774603&#39;,
+   u&#39;1438774633&#39;,
+   u&#39;1438774416&#39;,
+   u&#39;1438774571&#39;,
+   u&#39;1438774551&#39;,
+   u&#39;1438774497&#39;,
+   u&#39;1438774424&#39;,
+   u&#39;1438774586&#39;,
+   u&#39;1438774468&#39;,
+   u&#39;1438774389&#39;,
+   u&#39;1438774588&#39;,
+   u&#39;1438774342&#39;,
+   u&#39;1438774388&#39;,
+   u&#39;1438774601&#39;,
+   u&#39;1438774436&#39;,
+   u&#39;1438774533&#39;,
+   u&#39;1438774499&#39;,
+   u&#39;1438774600&#39;,
+   u&#39;1438774612&#39;,
+   u&#39;1438774570&#39;,
+   u&#39;1438774656&#39;,
+   u&#39;1438774554&#39;,
+   u&#39;1438774530&#39;,
+   u&#39;1438774581&#39;,
+   u&#39;1438774666&#39;,
+   u&#39;1438774492&#39;,
+   u&#39;1438774537&#39;,
+   u&#39;1438774437&#39;,
+   u&#39;1438774527&#39;,
+   u&#39;1438774368&#39;,
+   u&#39;1438774369&#39;,
+   u&#39;1438774421&#39;,
+   u&#39;1438774491&#39;,
+   u&#39;1438774445&#39;,
+   u&#39;1438774606&#39;,
+   u&#39;1438774664&#39;,
+   u&#39;1438774480&#39;,
+   u&#39;1438774641&#39;,
+   u&#39;1438774659&#39;,
+   u&#39;1438774357&#39;,
+   u&#39;1438774476&#39;,
+   u&#39;1438774638&#39;,
+   u&#39;1438774423&#39;,
+   u&#39;1438774540&#39;,
+   u&#39;1438774692&#39;,
+   u&#39;1438774443&#39;,
+   u&#39;1438774640&#39;,
+   u&#39;1438774634&#39;,
+   u&#39;1438774409&#39;,
+   u&#39;1438774591&#39;,
+   u&#39;1438774532&#39;,
+   u&#39;1438774608&#39;,
+   u&#39;1438774428&#39;,
+   u&#39;1438774602&#39;,
+   u&#39;1438774709&#39;,
+   u&#39;1438774519&#39;,
+   u&#39;1438774605&#39;,
+   u&#39;1438774645&#39;,
+   u&#39;1438774697&#39;,
+   u&#39;1438774377&#39;,
+   u&#39;1438774455&#39;,
+   u&#39;1438774391&#39;,
+   u&#39;1438774509&#39;,
+   u&#39;1438774465&#39;,
+   u&#39;1438774462&#39;,
+   u&#39;1438774611&#39;,
+   u&#39;1438774351&#39;,
+   u&#39;1438774587&#39;,
+   u&#39;1438774698&#39;,
+   u&#39;1438774474&#39;,
+   u&#39;1438774361&#39;,
+   u&#39;1438774466&#39;,
+   u&#39;1438774478&#39;,
+   u&#39;1438774673&#39;,
+   u&#39;1438774456&#39;,
+   u&#39;1438774454&#39;,
+   u&#39;1438774444&#39;,
+   u&#39;1438774576&#39;,
+   u&#39;1438774547&#39;,
+   u&#39;1438774568&#39;,
+   u&#39;1438774661&#39;,
+   u&#39;1438774364&#39;,
+   u&#39;1438774670&#39;,
+   u&#39;1438774523&#39;,
+   u&#39;1438774504&#39;,
+   u&#39;1438774373&#39;,
+   u&#39;1438774488&#39;,
+   u&#39;1438774513&#39;,
+   u&#39;1438793748&#39;,
+   u&#39;1438794141&#39;,
+   u&#39;1438793746&#39;,
+   u&#39;1438793444&#39;,
+   u&#39;1438793455&#39;,
+   u&#39;1438793860&#39;,
+   u&#39;1438794085&#39;,
+   u&#39;1438794148&#39;,
+   u&#39;1438793514&#39;,
+   u&#39;1438794144&#39;,
+   u&#39;1438793475&#39;,
+   u&#39;1438793835&#39;,
+   u&#39;1438793927&#39;,
+   u&#39;1438793500&#39;,
+   u&#39;1438793739&#39;,
+   u&#39;1438794070&#39;,
+   u&#39;1438793418&#39;,
+   u&#39;1438793490&#39;,
+   u&#39;1438793873&#39;,
+   u&#39;1438793931&#39;,
+   u&#39;1438793874&#39;,
+   u&#39;1438793513&#39;,
+   ...],
+  u&#39;tag&#39;: u&#39;way&#39;}]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 

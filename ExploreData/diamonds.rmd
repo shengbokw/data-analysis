@@ -47,18 +47,96 @@ sum(ifelse(diamonds$price >= 15000,1,0))
 
 
 ```{r}
-qplot(x = price, data = diamonds
-      )
+qplot(x = price, data = diamonds, binwidth = 20) +
+  scale_x_continuous(limits = c(300, 1500),
+                     breaks = seq(300,1500,100))
+```
+
+# Break out the histogram of diamond prices by cut.
+
+# You should have five histograms in separate
+# panels on your resulting plot.
+```{r}
+library(gridExtra) 
+
+qplot(x = price, data = diamonds) +
+  facet_wrap(~diamonds$cut, scales = "free_y", ncol = 3)
+
+```
+
+```{r}
+by(diamonds$price, diamonds$cut, summary)
+```
+
+# Create a histogram of price per carat
+# and facet it by cut. You can make adjustments
+# to the code from the previous exercise to get
+# started.
+
+# Adjust the bin width and transform the scale
+# of the x-axis using log10.
+
+```{r}
+qplot(x = log10(price/carat +1), data = diamonds, binwidth = 0.1) +
+  facet_wrap(~diamonds$cut, scales = "free_y", ncol = 5)
+
+```
+
+# Investigate the price of diamonds using box plots,
+# numerical summaries, and one of the following categorical
+# variables: cut, clarity, or color.
+
+# There won¡¯t be a solution video for this
+# exercise so go to the discussion thread for either
+# BOXPLOTS BY CLARITY, BOXPLOT BY COLOR, or BOXPLOTS BY CUT
+# to share you thoughts and to
+# see what other people found.
+
+# You can save images by using the ggsave() command.
+# ggsave() will save the last plot created.
+# For example...
+#                  qplot(x = price, data = diamonds)
+#                  ggsave('priceHistogram.png')
+
+# ggsave currently recognises the extensions eps/ps, tex (pictex),
+# pdf, jpeg, tiff, png, bmp, svg and wmf (windows only).
+```{r}
+p1 <- qplot(x = cut, y = price,
+          data = subset(diamonds, !is.na(cut)), 
+          geom = 'boxplot') +
+        scale_y_continuous(limits = c(0, 6000))
+
+p2 <- qplot(x = clarity, y = price,
+          data = subset(diamonds, !is.na(cut)), 
+          geom = 'boxplot') +
+        scale_y_continuous(limits = c(0, 6000))
+
+p3 <- qplot(x = color, y = price,
+          data = subset(diamonds, !is.na(cut)), 
+          geom = 'boxplot') +
+        scale_y_continuous(limits = c(0, 6000))
+
+grid.arrange(p1, p2, p3, ncol = 1)
+
+by(diamonds$price, diamonds$color, summary)
+
+```
+# Investigate the price per carat of diamonds across
+# the different colors of diamonds using boxplots.
+```{r}
+qplot(x = color, y = price/carat, data = diamonds, geom = 'boxplot') 
+
 ```
 
 
-
-
-
-
-
-
-
-
+```{r Frequency Polygons}
+qplot(x = carat, 
+        data = diamonds,
+        xlab = 'The weight of diamonds',
+        ylab = 'Proportion of diamonds with that weight',
+        geom = 'freqpoly',
+        binwidth = 0.1) +
+  scale_x_continuous() 
+```
 
 

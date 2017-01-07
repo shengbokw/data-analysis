@@ -1,0 +1,165 @@
+---
+title: "Prosper Loan Exploration"
+author: "Samuel Wang"
+date: "2017-01-05"
+output: html_document
+---
+
+How easily you can borrow loan from Prosper
+========================================================
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using
+# in your analysis in this code chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk.
+# This prevents the code from displaying in the knitted HTML output.
+# You should set echo=FALSE for all code chunks in your file.
+
+library(ggplot2)
+library(plyr)
+```
+This report explores a dataset containing quality and attributes for 1599 red wine.
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+prosperLoan <- read.csv(file = "./prosperLoanData.csv", header = TRUE, sep = ",")
+
+subvariables <- c('ListingCreationDate','CreditGrade','Term','LoanStatus','BorrowerRate','ProsperRating..Alpha.','ProsperScore','ListingCategory..numeric.','BorrowerState','Occupation','CurrentDelinquencies','IncomeRange','TotalProsperLoans','TotalProsperPaymentsBilled','OnTimeProsperPayments','LoanOriginalAmount')
+
+prosperLoan <- subset(prosperLoan,select=subvariables)
+
+colnames(prosperLoan)[6] <- "ProsperRating"
+colnames(prosperLoan)[8] <- "ListingCategory"
+
+prosperLoan$TotalProsperPaymentdelinquencies <- prosperLoan$TotalProsperPaymentsBilled - prosperLoan$OnTimeProsperPayments
+
+subvariables <- c('ListingCreationDate','CreditGrade','Term','LoanStatus','BorrowerRate','ProsperRating','ProsperScore','ListingCategory','BorrowerState','Occupation','CurrentDelinquencies','IncomeRange','TotalProsperLoans','TotalProsperPaymentdelinquencies','LoanOriginalAmount')
+
+prosperLoan <- subset(prosperLoan,select=subvariables)
+
+prosperLoan[is.na(prosperLoan)] <- 0
+
+ListingCategoryMap <- c("0"="Not Available","1"="Debt Consolidation","2"="Home Improvement","3"="Business",
+                        "4"="Personal Loan","5"="Student Use","6"="Auto","7"="Other","8"="Baby&Adoption",
+                        "9"="Boat","10"="Cosmetic Procedure","11"="Engagement Ring","12"="Green Loans",
+                        "13"="Household Expenses","14"="Large Purchases","15"="Medical/Dental","16"="Motorcycle",
+                        "17"="RV","18"="Taxes","19"="Vacation","20"="Wedding Loans")
+
+prosperLoan$ListingCategory <- as.character(prosperLoan$ListingCategory)
+revalue(prosperLoan$ListingCategory,ListingCategoryMap)
+
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "0"] <- "Not Available"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "1"] <- "Debt Consolidation"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "2"] <- "Home Improvement"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "3"] <- "Business"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "4"] <- "Personal Loan"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "5"] <- "Student Use"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "6"] <- "Auto"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "7"] <- "Other"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "8"] <- "Baby&Adoption"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "9"] <- "Boat"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "10"] <- "Cosmetic Procedure"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "11"] <- "Engagement Ring"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "12"] <- "Green Loans"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "13"] <- "Household Expenses"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "14"] <- "Large Purchases"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "15"] <- "Medical/Dental"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "16"] <- "Motorcycle"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "17"] <- "RV"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "18"] <- "Taxes"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "19"] <- "Vacation"
+prosperLoan$ListingCategory[prosperLoan$ListingCategory == "20"] <- "Wedding Loans"
+
+prosperLoan$ListingCategory <- as.factor(prosperLoan$ListingCategory)
+
+prosperLoan$ListingCreationDate <- as.Date(prosperLoan$ListingCreationDate, format='%Y-%m-%d')
+
+head(prosperLoan)
+
+write.csv(file = './subsetProsperLoanData.csv', prosperLoan, na="0")
+summary(prosperLoan)
+```
+
+Our dataset consists of 15 variables, with around 114,000 obseravations.
+
+# Univariate Plots Section
+```{r echo=FALSE, Univariate_Plots}
+ggplot(aes(x = quality), data = wine) + 
+  geom_histogram() +
+  scale_x_log10()
+```
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+
+### What is/are the main feature(s) of interest in your dataset?
+
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+
+### Did you create any new variables from existing variables in the dataset?
+
+### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
+
+
+
+# Bivariate Plots Section
+```{r echo=FALSE, Bivariate_Plots}
+
+```
+
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+
+### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+
+### What was the strongest relationship you found?
+
+
+
+
+# Multivariate Plots Section
+
+```{r echo=FALSE, Multivariate_Plots}
+
+```
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+
+### Were there any interesting or surprising interactions between features?
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+
+```
+
+### Description One
+
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+
+```
+
+### Description Two
+
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+
+```
+
+### Description Three
+
+------
+
+# Reflection

@@ -19,7 +19,7 @@ How easily you can borrow loan from Prosper
 library(ggplot2)
 library(plyr)
 ```
-This report explores a dataset containing quality and attributes for 1599 red wine.
+This report explores a dataset containing LoanStatus and attributes for almost 114000 loan data in Prosper. I pick out 15 variables from the total 81 variables which I think are strongly relative to borrower. So firstly I deal with the original data into a subset and take a look at the subset as follows:
 ```{r echo=FALSE, Load_the_Data}
 # Load the Data
 prosperLoan <- read.csv(file = "./prosperLoanData.csv", header = TRUE, sep = ",")
@@ -74,19 +74,125 @@ prosperLoan$ListingCategory <- as.factor(prosperLoan$ListingCategory)
 
 prosperLoan$ListingCreationDate <- as.Date(prosperLoan$ListingCreationDate, format='%Y-%m-%d')
 
-head(prosperLoan)
-
 write.csv(file = './subsetProsperLoanData.csv', prosperLoan, na="0")
-summary(prosperLoan)
+
+names(prosperLoan)
 ```
+The variable 'TotalProsperPaymentdelinquencies' represents the delinquencies a borrower made, which is equal to the difference between 'TotalProsperPaymentsBilled' and 'OnTimeProsperPayments', because I think this variable may represent a borrower's credit, which is very important for applying a loan. Also I transform the value of 'ListingCategory' into the category which it means. And transform the value of 'ListingCreationDate' into date value.
+
+Now let's explore it. I'd like to see the user counts at different years. We could see that the loan records are distributed from the year 2006 to 2014, while there is a gap at 2009, I guess that maybe there is an update of the system and the data before 2009 is on the old one. Also I see that the records are much more in 2014 than the former years. 
+```{r echo=FALSE, Load_the_Data}
+qplot(x = ListingCreationDate, data = prosperLoan, bins = 120)
+```
+Maybe there is a relationship between the month and the loan record, so I divide the variable 'ListingCreationDate' into year and month to see what will show, well, it seems there is no clear evidence.
+```{r echo=FALSE, Load_the_Data}
+prosperLoan$year <- as.numeric(format(prosperLoan$ListingCreationDate, '%Y'))
+prosperLoan$month <- as.numeric(format(prosperLoan$ListingCreationDate, '%m'))
+
+qplot(x = month, data = prosperLoan) +
+  scale_x_continuous(breaks = seq(0,12,3)) +
+  facet_wrap(~prosperLoan$year, scales = "free_y", ncol = 5)
+```
+```{r echo=FALSE, Load_the_Data}
+prosperLoan$IncomeRange = factor(prosperLoan$IncomeRange, 
+                                 levels=c("Not employed", "$0", "$1-24,999", "$25,000-49,999", 
+                                          "$50,000-74,999", "$75,000-99,999", "$100,000+", "Not displayed"))
+
+ggplot(data = prosperLoan, aes(x = IncomeRange)) + 
+  geom_bar(color = "black", fill = "blue") + 
+  theme(axis.text.x  = element_text(angle=30, vjust=0.5)) +
+  ggtitle("Income range of the borrowers")
+```
+```{r echo=FALSE, Load_the_Data}
+prosperLoan$IncomeRange = factor(prosperLoan$IncomeRange, 
+                                 levels=c("Not employed", "$0", "$1-24,999", "$25,000-49,999", 
+                                          "$50,000-74,999", "$75,000-99,999", "$100,000+", "Not displayed"))
+
+ggplot(data = prosperLoan, aes(x = IncomeRange)) + 
+  geom_bar(color = "black", fill = "blue") + 
+  theme(axis.text.x  = element_text(angle=30, vjust=0.5)) +
+  ggtitle("Income range of the borrowers")
+```
+
 
 Our dataset consists of 15 variables, with around 114,000 obseravations.
 
 # Univariate Plots Section
 ```{r echo=FALSE, Univariate_Plots}
-ggplot(aes(x = quality), data = wine) + 
-  geom_histogram() +
+ggplot(aes(x = ProsperScore), data = prosperLoan) + 
+  geom_histogram()
+
+p <- ggplot(prosperLoan, aes(LoanStatus))
+p <- p + geom_bar(width = 1, colour="white")
+p <- p + geom_text(aes(y = ..count.., label = ..count..),
+                   stat = "count", color = "white",
+                   hjust = 1.0, size = 3)
+p <- p + theme(legend.position = "none")
+p <- p + coord_flip()
+p
+
+qplot(x = ListingCreationDate, data = prosperLoan)
+
+qplot(x = CreditGrade, data = prosperLoan)
+
+qplot(x = Term, data = prosperLoan)
+
+qplot(x = BorrowerRate, data = prosperLoan, binwidth = 0.001)
+
+qplot(x = ProsperRating, data = prosperLoan)
+
+qplot(x = ProsperScore, data = prosperLoan)
+
+prosperLoan <- within(prosperLoan,
+                      ListingCategory <- factor(ListingCategory, 
+                                                levels = names(sort(table(ListingCategory),decreasing = TRUE))))
+p <- ggplot(prosperLoan, aes(ListingCategory))
+p <- p + geom_bar(width = 1, colour="white")
+p <- p + geom_text(aes(y = ..count.., label = ..count..),
+                   stat = "count", color = "white",
+                   hjust = 1.0, size = 3)
+p <- p + theme(legend.position = "none")
+p <- p + coord_flip()
+p
+
+
+prosperLoan <- within(prosperLoan,
+                      BorrowerState <- factor(BorrowerState, 
+                                                levels = names(sort(table(BorrowerState),decreasing = TRUE))))
+p <- ggplot(prosperLoan, aes(BorrowerState))
+p <- p + geom_bar(width = 1, colour="white")
+p <- p + geom_text(aes(y = ..count.., label = ..count..),
+                   stat = "count", color = "white",
+                   hjust = 1.0, size = 3)
+p <- p + theme(legend.position = "none")
+p <- p + coord_flip()
+p
+
+
+prosperLoan <- within(prosperLoan,
+                      Occupation <- factor(Occupation, 
+                                                levels = names(sort(table(Occupation),decreasing = TRUE))))
+p <- ggplot(prosperLoan, aes(Occupation))
+p <- p + geom_bar(width = 1, colour="white")
+p <- p + geom_text(aes(y = ..count.., label = ..count..),
+                   stat = "count", color = "white",
+                   hjust = 1.0, size = 3)
+p <- p + theme(legend.position = "none")
+p <- p + coord_flip()
+p
+
+
+qplot(x = CurrentDelinquencies, data = prosperLoan)
+
+qplot(x = IncomeRange, data = prosperLoan)
+
+qplot(x = LoanOriginalAmount, data = prosperLoan)
+
+qplot(x = LoanOriginalAmount, data = prosperLoan) + 
+  scale_x_continuous() +
   scale_x_log10()
+
+qplot(x = LoanOriginalAmount, data = prosperLoan)
 ```
 
 # Univariate Analysis

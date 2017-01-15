@@ -15,6 +15,10 @@ How easily you can borrow loan from Prosper
 # Notice that the parameter "echo" was set to FALSE for this code chunk.
 # This prevents the code from displaying in the knitted HTML output.
 # You should set echo=FALSE for all code chunks in your file.
+install.packages("ggplot2", dependencies = T) 
+install.packages("knitr", dependencies = T)
+install.packages("dplyr", dependencies = T)
+
 
 library(ggplot2)
 library(plyr)
@@ -22,7 +26,7 @@ library(plyr)
 This report explores a dataset containing LoanStatus and attributes for almost 114000 loan data in Prosper. I pick out 15 variables from the total 81 variables which I think are strongly relative to borrower. So firstly I deal with the original data into a subset and take a look at the subset as follows:
 ```{r echo=FALSE, Load_the_Data}
 # Load the Data
-prosperLoan <- read.csv(file = "./prosperLoanData.csv", header = TRUE, sep = ",")
+prosperLoan <- read.csv(file = "C:\\Users\\wangs\\Downloads\\subsetProsperLoanData.csv", header = TRUE, sep = ",")
 
 subvariables <- c('ListingCreationDate','CreditGrade','Term','LoanStatus','BorrowerRate','ProsperRating..Alpha.','ProsperScore','ListingCategory..numeric.','BorrowerState','Occupation','CurrentDelinquencies','IncomeRange','TotalProsperLoans','TotalProsperPaymentsBilled','OnTimeProsperPayments','LoanOriginalAmount')
 
@@ -93,6 +97,29 @@ qplot(x = month, data = prosperLoan) +
   scale_x_continuous(breaks = seq(0,12,3)) +
   facet_wrap(~prosperLoan$year, scales = "free_y", ncol = 5)
 ```
+The length of the loan expressed in months. And we can find that Prosper provides mostly 36-months loans.
+```{r echo=FALSE, Load_the_Data}
+prosperLoan$Term<-factor(prosperLoan$Term)
+ggplot(data=prosperLoan,aes(Term)) + 
+  geom_bar(color=I('black'),fill=I('blue'))
+```
+We can see that most of the loans are active but there still are some defaluted payments.
+```{r echo=FALSE, Load_the_Data}
+p <- ggplot(prosperLoan, aes(LoanStatus))
+p <- p + geom_bar(width = 1, colour="black", fill="blue")
+p <- p + geom_text(aes(y = ..count.., label = ..count..),
+                   stat = "count", color = "white",
+                   hjust = 1.0, size = 3)
+p <- p + theme(legend.position = "none")
+p <- p + coord_flip()
+p
+```
+The Borrower Rate seems quite uniformly distributed.
+```{r echo=FALSE, Load_the_Data}
+ggplot(data=prosperLoan,aes(BorrowerRate)) + 
+  geom_histogram(color=I('black'),fill=I('#56B4E9'))
+```
+
 ```{r echo=FALSE, Load_the_Data}
 prosperLoan$IncomeRange = factor(prosperLoan$IncomeRange, 
                                  levels=c("Not employed", "$0", "$1-24,999", "$25,000-49,999", 
@@ -103,17 +130,6 @@ ggplot(data = prosperLoan, aes(x = IncomeRange)) +
   theme(axis.text.x  = element_text(angle=30, vjust=0.5)) +
   ggtitle("Income range of the borrowers")
 ```
-```{r echo=FALSE, Load_the_Data}
-prosperLoan$IncomeRange = factor(prosperLoan$IncomeRange, 
-                                 levels=c("Not employed", "$0", "$1-24,999", "$25,000-49,999", 
-                                          "$50,000-74,999", "$75,000-99,999", "$100,000+", "Not displayed"))
-
-ggplot(data = prosperLoan, aes(x = IncomeRange)) + 
-  geom_bar(color = "black", fill = "blue") + 
-  theme(axis.text.x  = element_text(angle=30, vjust=0.5)) +
-  ggtitle("Income range of the borrowers")
-```
-
 
 Our dataset consists of 15 variables, with around 114,000 obseravations.
 

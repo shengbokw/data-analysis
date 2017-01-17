@@ -22,6 +22,7 @@ install.packages("dplyr", dependencies = T)
 
 library(ggplot2)
 library(plyr)
+library(dplyr)
 ```
 This report explores a dataset containing LoanStatus and attributes for almost 114000 loan data in Prosper. I pick out 15 variables from the total 81 variables which I think are strongly relative to borrower. So firstly I deal with the original data into a subset and take a look at the subset as follows:
 ```{r echo=FALSE, Load_the_Data}
@@ -106,7 +107,7 @@ ggplot(data=prosperLoan,aes(Term)) +
 We can see that most of the loans are active but there still are some defaluted payments.
 ```{r echo=FALSE, Load_the_Data}
 p <- ggplot(prosperLoan, aes(LoanStatus))
-p <- p + geom_bar(width = 1, colour="black", fill="blue")
+p <- p + geom_bar(width = 1, colour="white", fill="blue")
 p <- p + geom_text(aes(y = ..count.., label = ..count..),
                    stat = "count", color = "white",
                    hjust = 1.0, size = 3)
@@ -116,49 +117,17 @@ p
 ```
 The Borrower Rate seems quite uniformly distributed.
 ```{r echo=FALSE, Load_the_Data}
-ggplot(data=prosperLoan,aes(BorrowerRate)) + 
+ggplot(data=prosperLoan,aes(BorrowerRate),bins = 50) + 
   geom_histogram(color=I('black'),fill=I('#56B4E9'))
 ```
-
+A custom risk score was created by Prosper in order to assess risk. The score ranges from 1-11, with 11 being the best, or lowest, risk score. We can see that except for the missing values, borrowers' score are approximately normally distributed. Most of the borrowers have score ranging from 4 to 8.
 ```{r echo=FALSE, Load_the_Data}
-prosperLoan$IncomeRange = factor(prosperLoan$IncomeRange, 
-                                 levels=c("Not employed", "$0", "$1-24,999", "$25,000-49,999", 
-                                          "$50,000-74,999", "$75,000-99,999", "$100,000+", "Not displayed"))
-
-ggplot(data = prosperLoan, aes(x = IncomeRange)) + 
-  geom_bar(color = "black", fill = "blue") + 
-  theme(axis.text.x  = element_text(angle=30, vjust=0.5)) +
-  ggtitle("Income range of the borrowers")
-```
-
-Our dataset consists of 15 variables, with around 114,000 obseravations.
-
-# Univariate Plots Section
-```{r echo=FALSE, Univariate_Plots}
 ggplot(aes(x = ProsperScore), data = prosperLoan) + 
-  geom_histogram()
-
-p <- ggplot(prosperLoan, aes(LoanStatus))
-p <- p + geom_bar(width = 1, colour="white")
-p <- p + geom_text(aes(y = ..count.., label = ..count..),
-                   stat = "count", color = "white",
-                   hjust = 1.0, size = 3)
-p <- p + theme(legend.position = "none")
-p <- p + coord_flip()
-p
-
-qplot(x = ListingCreationDate, data = prosperLoan)
-
-qplot(x = CreditGrade, data = prosperLoan)
-
-qplot(x = Term, data = prosperLoan)
-
-qplot(x = BorrowerRate, data = prosperLoan, binwidth = 0.001)
-
-qplot(x = ProsperRating, data = prosperLoan)
-
-qplot(x = ProsperScore, data = prosperLoan)
-
+  geom_histogram() +
+  scale_x_continuous(breaks = seq(1,11,1))
+```
+From the above figure, we could tell that most loans on Prosper are for Debt Consolidation. Excluding the Not Available and Other purposes, most of the loans go into Home Improvement, Business.While categories like entaimment things such as Boat, Vacation only accupate a small portion of the loan. Therefore, I conclude that most the people borrow money for necessary needs.
+```{r echo=FALSE, Univariate_Plots}
 prosperLoan <- within(prosperLoan,
                       ListingCategory <- factor(ListingCategory, 
                                                 levels = names(sort(table(ListingCategory),decreasing = TRUE))))
@@ -170,8 +139,10 @@ p <- p + geom_text(aes(y = ..count.., label = ..count..),
 p <- p + theme(legend.position = "none")
 p <- p + coord_flip()
 p
+```
 
-
+As we can see from this histgrom, CA, TX, NY, Fl and IL have the most borrowers. These are the most populous and economically areas as well.
+```{r echo=FALSE, Univariate_Plots}
 prosperLoan <- within(prosperLoan,
                       BorrowerState <- factor(BorrowerState, 
                                                 levels = names(sort(table(BorrowerState),decreasing = TRUE))))
@@ -180,11 +151,12 @@ p <- p + geom_bar(width = 1, colour="white")
 p <- p + geom_text(aes(y = ..count.., label = ..count..),
                    stat = "count", color = "white",
                    hjust = 1.0, size = 3)
-p <- p + theme(legend.position = "none")
-p <- p + coord_flip()
+#p <- p + theme(legend.position = "none")
+#p <- p + coord_flip()
 p
+```
 
-
+```{r echo=FALSE, Univariate_Plots}
 prosperLoan <- within(prosperLoan,
                       Occupation <- factor(Occupation, 
                                                 levels = names(sort(table(Occupation),decreasing = TRUE))))
@@ -196,19 +168,29 @@ p <- p + geom_text(aes(y = ..count.., label = ..count..),
 p <- p + theme(legend.position = "none")
 p <- p + coord_flip()
 p
+```
+
+Most of the people using Prosper have an income between $25000 and $75000.
+```{r echo=FALSE, Univariate_Plots}
+prosperLoan$IncomeRange = factor(prosperLoan$IncomeRange, 
+                                 levels=c("Not employed", "$0", "$1-24,999", "$25,000-49,999", 
+                                          "$50,000-74,999", "$75,000-99,999", "$100,000+", "Not displayed"))
+
+ggplot(data = prosperLoan, aes(x = IncomeRange)) + 
+  geom_bar(color = "black", fill = "blue") + 
+  theme(axis.text.x  = element_text(angle=30, vjust=0.5)) +
+  ggtitle("Income range of the borrowers")
+```
 
 
-qplot(x = CurrentDelinquencies, data = prosperLoan)
 
-qplot(x = IncomeRange, data = prosperLoan)
-
+# Univariate Plots Section
+```{r echo=FALSE, Univariate_Plots}
 qplot(x = LoanOriginalAmount, data = prosperLoan)
 
 qplot(x = LoanOriginalAmount, data = prosperLoan) + 
   scale_x_continuous() +
   scale_x_log10()
-
-qplot(x = LoanOriginalAmount, data = prosperLoan)
 ```
 
 # Univariate Analysis

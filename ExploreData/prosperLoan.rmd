@@ -196,15 +196,19 @@ qplot(x = LoanOriginalAmount, data = prosperLoan) +
 # Univariate Analysis
 
 ### What is the structure of your dataset?
+There are 113937 loan records with 81 variables in the dataset, some are numeric and some are factor. While I choose 15 variables which are all relative to the borrowers from the whole set.
 
 ### What is/are the main feature(s) of interest in your dataset?
+I care about what kinds of people will borrow a loan and what characters can improve the deal of loan. So the main feature in this data set is borrowerrate, which a borrower cares most. I want to find out which variables have impact on it.
 
 ### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+I think that ProsperRating and CreditGrade have big impacts on BorrowerRate, since lending money to lower rating borrower may have higher risks. Moreover, IncomeRange, Term, Occapution, CurrentDelinquencies and LoanOriginalAmount may also help me investigate the BorrowerRate.
 
 ### Did you create any new variables from existing variables in the dataset?
+Yes, The variable 'TotalProsperPaymentdelinquencies' represents the delinquencies a borrower made, which is equal to the difference between 'TotalProsperPaymentsBilled' and 'OnTimeProsperPayments', because I think this variable may represent a borrower's credit, which is very important for applying a loan. Also I transform the value of 'ListingCategory' into the category which it means. And transform the value of 'ListingCreationDate' into date value.
 
 ### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
-
+Yes, I divied the variable ListingCreationDate into year and month. When I drawed the ListingCreationDate into histogram, I found in each year there is a trend growing higher, so I guess that maybe in different months, the desire of people wanting to borrow a loan is changeable.
 
 
 # Bivariate Plots Section

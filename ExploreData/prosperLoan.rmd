@@ -19,7 +19,6 @@ install.packages("ggplot2", dependencies = T)
 install.packages("knitr", dependencies = T)
 install.packages("dplyr", dependencies = T)
 
-
 library(ggplot2)
 library(plyr)
 library(dplyr)
@@ -85,8 +84,9 @@ names(prosperLoan)
 ```
 The variable 'TotalProsperPaymentdelinquencies' represents the delinquencies a borrower made, which is equal to the difference between 'TotalProsperPaymentsBilled' and 'OnTimeProsperPayments', because I think this variable may represent a borrower's credit, which is very important for applying a loan. Also I transform the value of 'ListingCategory' into the category which it means. And transform the value of 'ListingCreationDate' into date value.
 
-Now let's explore it. I'd like to see the user counts at different years. We could see that the loan records are distributed from the year 2006 to 2014, while there is a gap at 2009, I guess that maybe there is an update of the system and the data before 2009 is on the old one. Also I see that the records are much more in 2014 than the former years. 
+Now let's explore the data. I'd like to see the user counts at different years. We could see that the loan records are distributed from the year 2006 to 2014, while there is a gap at 2009, from [Wiki](https://en.wikipedia.org/wiki/Prosper_Marketplace#2009_post_SEC_relaunch), we konw this 'quite period' is because a class action lawsuit was filed against Prosper in the Superior Court of California, County of San Francisco, California. Also I see that the records are much more in 2014 than the former years. With more and more people know Prosper, it becomes popular to invest and borrow a loan on Prosper.
 ```{r echo=FALSE, Load_the_Data}
+qplot(x = ListingCreationDate, data = prosperLoan)
 qplot(x = ListingCreationDate, data = prosperLoan, bins = 120)
 ```
 Maybe there is a relationship between the month and the loan record, so I divide the variable 'ListingCreationDate' into year and month to see what will show, well, it seems there is no clear evidence.
@@ -213,6 +213,16 @@ Yes, I divied the variable ListingCreationDate into year and month. When I drawe
 
 # Bivariate Plots Section
 ```{r echo=FALSE, Bivariate_Plots}
+ggplot(data = prosperLoan, aes(x = ProsperScore, y = BorrowerRate)) +
+        geom_boxplot(aes(fill = ProsperScore)) +
+        xlab("Score") +
+        ggtitle("Yield for Different Prosper Score")
+
+qplot(x = ProsperScore, y = BorrowerRate,
+      data = subset(prosperLoan, !is.na(ProsperScore)), 
+      geom = 'boxplot')
+
+by(prosperLoan$BorrowerRate, prosperLoan$ProsperScore, summary)
 
 ```
 

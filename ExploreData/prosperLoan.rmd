@@ -5,7 +5,7 @@ date: "2017-01-05"
 output: html_document
 ---
 
-How easily you can borrow loan from Prosper
+What borrower rate you need to pay when you wanna a loan from Prosper
 ========================================================
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
@@ -82,29 +82,11 @@ write.csv(file = './subsetProsperLoanData.csv', prosperLoan, na="0")
 
 names(prosperLoan)
 ```
+# Univariate Plots Section
 The variable 'TotalProsperPaymentdelinquencies' represents the delinquencies a borrower made, which is equal to the difference between 'TotalProsperPaymentsBilled' and 'OnTimeProsperPayments', because I think this variable may represent a borrower's credit, which is very important for applying a loan. Also I transform the value of 'ListingCategory' into the category which it means. And transform the value of 'ListingCreationDate' into date value.
 
-Now let's explore the data. I'd like to see the user counts at different years. We could see that the loan records are distributed from the year 2006 to 2014, while there is a gap at 2009, from [Wiki](https://en.wikipedia.org/wiki/Prosper_Marketplace#2009_post_SEC_relaunch), we konw this 'quite period' is because a class action lawsuit was filed against Prosper in the Superior Court of California, County of San Francisco, California. Also I see that the records are much more in 2014 than the former years. With more and more people know Prosper, it becomes popular to invest and borrow a loan on Prosper.
-```{r echo=FALSE, Load_the_Data}
-qplot(x = ListingCreationDate, data = prosperLoan)
-qplot(x = ListingCreationDate, data = prosperLoan, bins = 120)
-```
-Maybe there is a relationship between the month and the loan record, so I divide the variable 'ListingCreationDate' into year and month to see what will show, well, it seems there is no clear evidence.
-```{r echo=FALSE, Load_the_Data}
-prosperLoan$year <- as.numeric(format(prosperLoan$ListingCreationDate, '%Y'))
-prosperLoan$month <- as.numeric(format(prosperLoan$ListingCreationDate, '%m'))
-
-qplot(x = month, data = prosperLoan) +
-  scale_x_continuous(breaks = seq(0,12,3)) +
-  facet_wrap(~prosperLoan$year, scales = "free_y", ncol = 5)
-```
-The length of the loan expressed in months. And we can find that Prosper provides mostly 36-months loans.
-```{r echo=FALSE, Load_the_Data}
-prosperLoan$Term<-factor(prosperLoan$Term)
-ggplot(data=prosperLoan,aes(Term)) + 
-  geom_bar(color=I('black'),fill=I('blue'))
-```
-We can see that most of the loans are active but there still are some defaluted payments.
+Now let's explore the data. Because I want to disscuss about the borrowers, so the first thing came up to my mind is how easily one person can borrow a loan from Prosper. Then you need know whether an application for a loan is accepted or not, Then I find a variable called LoanStatus.
+We can see that most of the loans are active but there still are some defaluted payments. But this variable stands for the status of a loan, I can't find any evidence of how easily one can borrow a loan, so I choose the variable BorrowerRate, which is also very important for a borrower.
 ```{r echo=FALSE, Load_the_Data}
 p <- ggplot(prosperLoan, aes(LoanStatus))
 p <- p + geom_bar(width = 1, colour="white", fill="blue")
@@ -115,18 +97,44 @@ p <- p + theme(legend.position = "none")
 p <- p + coord_flip()
 p
 ```
-The Borrower Rate seems quite uniformly distributed.
 ```{r echo=FALSE, Load_the_Data}
-ggplot(data=prosperLoan,aes(BorrowerRate),bins = 50) + 
-  geom_histogram(color=I('black'),fill=I('#56B4E9'))
+ggplot(data=prosperLoan,aes(BorrowerRate)) + 
+  geom_histogram(color=I('black'),fill=I('orange'), bins = 50)
 ```
-A custom risk score was created by Prosper in order to assess risk. The score ranges from 1-11, with 11 being the best, or lowest, risk score. We can see that except for the missing values, borrowers' score are approximately normally distributed. Most of the borrowers have score ranging from 4 to 8.
+The Borrower Rate seems quite uniformly distributed, except for the data around 0.32, it seems there are some outliners. so let's take a close look at the range between 0.3-0.4 with 150 bins.
+```{r echo=FALSE, Load_the_Data}
+ggplot(data=subset(prosperLoan, between(prosperLoan$BorrowerRate, 0.3, 0.4)),aes(BorrowerRate)) + 
+  geom_histogram(color=I('black'),fill=I('orange'), bins = 150) + 
+  ggtitle('Frequency of Interest Rate (with 150 bins)')
+```
+While taking the fact that this data is provided by Prosper into consideration, there must be few wrong data. Maybe there is a period when Prosper added thier fee of providing loans, then I draw a histogram to see the user counts at different years. 
+```{r echo=FALSE, Load_the_Data}
+qplot(x = ListingCreationDate, data = prosperLoan, bins = 120)
+```
+We could see that the loan records are distributed from the year 2006 to 2014, while there is a gap at 2009, from [Wiki](https://en.wikipedia.org/wiki/Prosper_Marketplace#2009_post_SEC_relaunch), we konw this 'quite period' is because a class action lawsuit was filed against Prosper in the Superior Court of California, County of San Francisco, California. Also I see that the records are much more in 2014 than the former years. With more and more people know Prosper, it becomes popular to invest and borrow a loan on Prosper.
+
+Maybe there is a relationship between the month and the loan record, so I divide the variable 'ListingCreationDate' into year and month to see what will show. 
+```{r echo=FALSE, Load_the_Data}
+prosperLoan$year <- as.numeric(format(prosperLoan$ListingCreationDate, '%Y'))
+prosperLoan$month <- as.numeric(format(prosperLoan$ListingCreationDate, '%m'))
+
+qplot(x = month, data = prosperLoan) +
+  scale_x_continuous(breaks = seq(0,12,3)) +
+  facet_wrap(~prosperLoan$year, scales = "free_y", ncol = 5)
+```
+Well, it seems there is no clear evidence.Now we know some information about the loan creation date, and it may influence the borrowerrate. I need analysis more variables which may influence the borrowerRate, and in fact I have zoomed in the variables which I think will have impact on borrowerRate, what I should do now is analysis one by one. Well, the next is the length of the loan expressed in months. 
+```{r echo=FALSE, Load_the_Data}
+prosperLoan$Term<-factor(prosperLoan$Term)
+ggplot(data=prosperLoan,aes(Term)) + 
+  geom_bar(color=I('black'),fill=I('blue'))
+```
+From the above histogram, we can find that Prosper provides mostly 36-months loans, then 60-months, 12-months at least. From the count of loans and rule of thumb, maybe these 12-months loans is those high borrowerRate loans, which we can discuss in the next part. Let's see how custom risk score distribute, which was created by Prosper in order to assess risk. The score ranges from 1-11, with 11 being the best, or lowest, risk score.
 ```{r echo=FALSE, Load_the_Data}
 ggplot(aes(x = ProsperScore), data = prosperLoan) + 
   geom_histogram() +
   scale_x_continuous(breaks = seq(1,11,1))
 ```
-From the above figure, we could tell that most loans on Prosper are for Debt Consolidation. Excluding the Not Available and Other purposes, most of the loans go into Home Improvement, Business.While categories like entaimment things such as Boat, Vacation only accupate a small portion of the loan. Therefore, I conclude that most the people borrow money for necessary needs.
+We can see that except for the missing values, borrowers' score are approximately normally distributed. Most of the borrowers have score ranging from 4 to 8. How about the ListingCategory:
 ```{r echo=FALSE, Univariate_Plots}
 prosperLoan <- within(prosperLoan,
                       ListingCategory <- factor(ListingCategory, 
@@ -140,58 +148,61 @@ p <- p + theme(legend.position = "none")
 p <- p + coord_flip()
 p
 ```
-
-As we can see from this histgrom, CA, TX, NY, Fl and IL have the most borrowers. These are the most populous and economically areas as well.
+From the above figure, we could tell that most loans on Prosper are for Debt Consolidation. Excluding the Not Available and Other purposes, most of the loans go into Home Improvement, Business. While categories like entaimment things such as RV, Boat, Motorcycle, Vacation only accupate a small portion of the loan. Therefore, I conclude that most the people borrow money for necessary needs. Then how about the state:
 ```{r echo=FALSE, Univariate_Plots}
 prosperLoan <- within(prosperLoan,
                       BorrowerState <- factor(BorrowerState, 
                                                 levels = names(sort(table(BorrowerState),decreasing = TRUE))))
-p <- ggplot(prosperLoan, aes(BorrowerState))
-p <- p + geom_bar(width = 1, colour="white")
-p <- p + geom_text(aes(y = ..count.., label = ..count..),
-                   stat = "count", color = "white",
-                   hjust = 1.0, size = 3)
-#p <- p + theme(legend.position = "none")
-#p <- p + coord_flip()
-p
-```
+par(mar = c(5, 1, 1, 5), mgp=c(3,1,0),las=0)
 
+ggplot(prosperLoan, aes(BorrowerState)) + 
+  geom_bar(bin = 1, colour="white") +
+  geom_text(aes(y = ..count.., label = ..count..),
+                   stat = "count", color = "white",
+                   hjust = 1.0, size = 3) + 
+  theme(axis.text.x  = element_text(angle=90, vjust=0.5, size = 7)) 
+
+
+```
+As we can see from this histgrom, CA, TX, NY, Fl and IL have the most borrowers. It seems that these states are the most populous and economically areas as well. How about the occupation of the borrowers:
 ```{r echo=FALSE, Univariate_Plots}
 prosperLoan <- within(prosperLoan,
                       Occupation <- factor(Occupation, 
                                                 levels = names(sort(table(Occupation),decreasing = TRUE))))
-p <- ggplot(prosperLoan, aes(Occupation))
-p <- p + geom_bar(width = 1, colour="white")
-p <- p + geom_text(aes(y = ..count.., label = ..count..),
+ggplot(prosperLoan, aes(Occupation)) + 
+  geom_bar(width = 1, colour="white") + 
+  geom_text(aes(y = ..count.., label = ..count..),
                    stat = "count", color = "white",
-                   hjust = 1.0, size = 3)
-p <- p + theme(legend.position = "none")
-p <- p + coord_flip()
-p
+                   hjust = 1.0, size = 3) + 
+  theme(axis.text.x  = element_text(angle=90, vjust=0.5, size = 7)) 
 ```
-
-Most of the people using Prosper have an income between $25000 and $75000.
+There are so many borrowers who hadn't provided their occupation, ignoring this, Professional, computer programmer, Executive etc. borrow a loan most, and the tail show that few student borrow a loan, which meets the ListingCategory. So how about the borrowers' income:
 ```{r echo=FALSE, Univariate_Plots}
 prosperLoan$IncomeRange = factor(prosperLoan$IncomeRange, 
                                  levels=c("Not employed", "$0", "$1-24,999", "$25,000-49,999", 
                                           "$50,000-74,999", "$75,000-99,999", "$100,000+", "Not displayed"))
 
 ggplot(data = prosperLoan, aes(x = IncomeRange)) + 
-  geom_bar(color = "black", fill = "blue") + 
+  geom_bar(color = "black", fill = "pink") + 
   theme(axis.text.x  = element_text(angle=30, vjust=0.5)) +
   ggtitle("Income range of the borrowers")
 ```
-
-
-
-# Univariate Plots Section
+Most of the people using Prosper have an income between $25000 and $75000. The original amount of a loan can definitely impact the borrower rate, so let's study it.
 ```{r echo=FALSE, Univariate_Plots}
-qplot(x = LoanOriginalAmount, data = prosperLoan)
-
-qplot(x = LoanOriginalAmount, data = prosperLoan) + 
-  scale_x_continuous() +
+qplot(x = LoanOriginalAmount, data = prosperLoan, bins = 30)
+```
+It looks like a long tail data, so for better understand the distribution of the LoanOriginalAmount, I transformed this distribution on a log scale.
+```{r echo=FALSE, Univariate_Plots}
+qplot(x = LoanOriginalAmount, data = prosperLoan, bins = 1000) + 
   scale_x_log10()
 ```
+We see amounts are 1000, 2000, 5000, and 10000, these numbers are the most. I also created a new variable TotalProsperPaymentdelinquencies which is equal to the difference between TotalProsperPaymentsBilled and OnTimeProsperPayments. If a borrower trend to delay his payments of loan, I think Prosper will give him an higher borrower rate when he wanna borrow a new loan next time. But I realized it's quite difficult to discuss it, because I need to calculate the borrowers who has borrowed a loan from Prosper for at least 2 times, then analysis the influence between the latter borrowerRate and the former paymentdelinquencies. Actually this variable TotalProsperPaymentdelinquencies is more useful for judging how easliy one person can borrow a loan form Prosper. So how about the currentDelinquencues:
+```{r echo=FALSE, Univariate_Plots}
+qplot(x = CurrentDelinquencies, data = prosperLoan) + 
+  scale_x_continuous(limits = c(-1, 33),breaks = seq(-1,33,3)) +
+  scale_y_continuous(limits = c(-1, 12000),breaks = seq(-1,12000,1000))
+```
+A large part of people haven't had a delinquencies, while there are serval borrowers have had one or two times delinqunencies, also very few people had more than 10 times delinquencies, I'm curious about how can they get further loans with such a bad credit, maybe their further loans should provide higher borrower rate.
 
 # Univariate Analysis
 

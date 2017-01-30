@@ -238,7 +238,7 @@ Yes, I divied the variable ListingCreationDate into year and month. When I drawe
 # Bivariate Plots Section
 Since I have explored the univarite data, the next step is Bivariate section. With the selected variables, let's see the correlation matrix.
 ```{r echo=FALSE, Bivariate_Plots}
-sub_vars <- c("BorrowerRate","Term",
+sub_vars <- c("BorrowerRate","year","month","Term",
                    "ProsperScore",
                    "IncomeRange",
                    "LoanOriginalAmount",
@@ -257,10 +257,6 @@ ggplot(data = prosperLoan, aes(x = ProsperScore, y = BorrowerRate)) +
         geom_boxplot(aes(fill = ProsperScore)) +
         xlab("Score") +
         ggtitle("Yield for Different Prosper Score")
-
-qplot(x = ProsperScore, y = BorrowerRate,
-      data = subset(prosperLoan, !is.na(ProsperScore)), 
-      geom = 'boxplot')
 
 by(prosperLoan$BorrowerRate, prosperLoan$ProsperScore, summary)
 

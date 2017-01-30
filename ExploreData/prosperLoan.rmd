@@ -18,10 +18,23 @@ What borrower rate you need to pay when you wanna a loan from Prosper
 install.packages("ggplot2", dependencies = T) 
 install.packages("knitr", dependencies = T)
 install.packages("dplyr", dependencies = T)
+install.packages("GGally")
+install.packages("scales")
+install.packages("memisc")
+install.packages("lattice")
+install.packages("MASS")
+install.packages("car")
+install.packages("reshape")
+install.packages("plry")
+
 
 library(ggplot2)
 library(plyr)
 library(dplyr)
+library(GGally)
+library(scales)
+library(memisc)
+library(gridExtra)
 ```
 This report explores a dataset containing LoanStatus and attributes for almost 114000 loan data in Prosper. I pick out 15 variables from the total 81 variables which I think are strongly relative to borrower. So firstly I deal with the original data into a subset and take a look at the subset as follows:
 ```{r echo=FALSE, Load_the_Data}
@@ -223,6 +236,22 @@ Yes, I divied the variable ListingCreationDate into year and month. When I drawe
 
 
 # Bivariate Plots Section
+Since I have explored the univarite data, the next step is Bivariate section. With the selected variables, let's see the correlation matrix.
+```{r echo=FALSE, Bivariate_Plots}
+sub_vars <- c("BorrowerRate","Term",
+                   "ProsperScore",
+                   "IncomeRange",
+                   "LoanOriginalAmount",
+                   "CurrentDelinquencies")
+sub_prosperLoan <- subset(prosperLoan,select=sub_vars)
+
+set.seed(20022012)
+loan_samp <- sub_prosperLoan[sample(1:length(sub_prosperLoan$BorrowerRate),10000),]
+ggpairs(loan_samp, 
+  lower = list(continuous = wrap("points", shape = I('.'))), 
+  upper = list(combo = wrap("box", outlier.shape = I('.'))))
+```
+
 ```{r echo=FALSE, Bivariate_Plots}
 ggplot(data = prosperLoan, aes(x = ProsperScore, y = BorrowerRate)) +
         geom_boxplot(aes(fill = ProsperScore)) +

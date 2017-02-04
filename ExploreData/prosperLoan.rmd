@@ -34,6 +34,7 @@ library(dplyr)
 library(GGally)
 library(scales)
 library(memisc)
+library(reshape)
 library(gridExtra)
 ```
 This report explores a dataset containing LoanStatus and attributes for almost 114000 loan data in Prosper. I pick out 15 variables from the total 81 variables which I think are strongly relative to borrower. So firstly I deal with the original data into a subset and take a look at the subset as follows:
@@ -236,13 +237,30 @@ Yes, I divied the variable ListingCreationDate into year and month. When I drawe
 
 
 # Bivariate Plots Section
-Since I have explored the univarite data, the next step is Bivariate section. With the selected variables, let's see the correlation matrix.
+Since I have explored the univarite data, the next step is Bivariate section. BUT first, I'm very curious about the relationship between CreditGrade and ProsperRating, let's check it.
 ```{r echo=FALSE, Bivariate_Plots}
-sub_vars <- c("BorrowerRate","year","month","Term",
+prosperLoan$CreditGrade <- as.numeric(prosperLoan$CreditGrade) - 1
+prosperLoan$ProsperRating <- as.numeric(prosperLoan$ProsperRating) - 1
+
+p1 <- qplot(data = subset(prosperLoan, CreditGrade > 0), x = ListingCreationDate, bins = 30) + ylim(0,10000)
+p2 <- qplot(data = subset(prosperLoan, ProsperRating > 0), x = ListingCreationDate, bins = 90)
+grid.arrange(p1, p2, ncol = 2)
+```
+There two variables presents the credit of a person, after the lawsuit, Prosper added the ProsperRating to stand for borrower's credit. So I combined these two into CreditRating.
+```{r echo=FALSE, Bivariate_Plots}
+prosperLoan$CreditRating <- prosperLoan$CreditGrade
+prosperLoan$CreditRating[which(prosperLoan$ProsperRating > 0)] <- prosperLoan$ProsperRating[which(prosperLoan$ProsperRating > 0)]
+
+prosperLoan$TermYears <- as.numeric(levels(prosperLoan$Term))[prosperLoan$Term] / 12
+```
+With the selected variables, let's see the correlation matrix. 
+```{r echo=FALSE, Bivariate_Plots}
+sub_vars <- c("BorrowerRate","year","month","TermYears",
                    "ProsperScore",
-                   "IncomeRange",
+                   "TotalProsperLoans",
                    "LoanOriginalAmount",
-                   "CurrentDelinquencies")
+                   "CurrentDelinquencies",
+                   "CreditRating")
 sub_prosperLoan <- subset(prosperLoan,select=sub_vars)
 
 set.seed(20022012)
@@ -250,30 +268,65 @@ loan_samp <- sub_prosperLoan[sample(1:length(sub_prosperLoan$BorrowerRate),10000
 ggpairs(loan_samp, 
   lower = list(continuous = wrap("points", shape = I('.'))), 
   upper = list(combo = wrap("box", outlier.shape = I('.'))))
+head(prosperLoan)
 ```
-
+I also tranformed Term to TermYears, but there is no significant relevance between Term and borrowerRate, and this is out of my mind. From the correlation matrix, we see that CreditRating has the strongest relationship with BorrowerRate, and OriginalAmount next. Though the correlation between BorrowerRate and ProsperScore is less than 0.3, I still wanted to draw a boxplot to see it in detail.
 ```{r echo=FALSE, Bivariate_Plots}
 ggplot(data = prosperLoan, aes(x = ProsperScore, y = BorrowerRate)) +
-        geom_boxplot(aes(fill = ProsperScore)) +
-        xlab("Score") +
-        ggtitle("Yield for Different Prosper Score")
+        geom_boxplot(aes(group=prosperLoan$ProsperScore)) 
 
 by(prosperLoan$BorrowerRate, prosperLoan$ProsperScore, summary)
-
+head(prosperLoan)
 ```
+From the boxplot above, we saw that without the outliers, there is a trendence that higher scores in Prosper recieve a lower borrower rate. So I removed the data whose ProsperScore is 0 and checked the corretionship.
+```{r}
+cor.test(~ BorrowerRate + ProsperScore, data = subset(prosperLoan, ProsperScore > 0 & ProsperScore < quantile(ProsperScore, 0.99)))
+```
+We saw the cor is equal to -0.6351316, it's strong relevated. Actually I also wanted to remove the outliers in each group, as the boxplot showed before, scores like 1, 2, 8, 9, 10 have several outliers, I should have removed those away, but I don't know how.(to the reviewer: can you help me, please?). Then I'm curious about the relationship between month and term, year and Term.
+```{r echo=FALSE, Bivariate_Plots}
+ggplot(data = prosperLoan, aes(month, fill=factor(Term))) +
+  geom_bar(colour="black") +
+  scale_x_continuous(breaks = seq(0,12,1))
+```
+```{r echo=FALSE, Bivariate_Plots}
+ggplot(data = prosperLoan, aes(year, fill=factor(Term))) +
+  geom_bar(colour="black") +
+  scale_x_continuous(breaks = seq(2004,2016,1))
+```
+The most part of loans are 36-month, January has the contributes the most loans while March and April has the least loans. Maybe Within the Christmas and New Year holiday, people spend too much in shopping and transportation, then they need loans in January. In my opinion, there will be strong relationship between CreditRating and ProsperScore, so let's check it.
+```{r}
+cor.test(~ CreditRating + ProsperScore, data = subset(prosperLoan, ProsperScore > 0 & ProsperScore < quantile(ProsperScore, 0.99)))
+```
+The cor is -0.6721052, more stronger than BorrowerRate and ProsperScore. How about the relationship between the LoanOriginalAmount and income range?
+```{r}
+prosperLoan$IncomeRange[prosperLoan$IncomeRange == "$0"] <- "Not displyed"
+prosperLoan$IncomeRange[prosperLoan$IncomeRange == "Not employed"] <- "Not displyed"
 
+ggplot(data = subset(prosperLoan, !is.na(IncomeRange) & LoanOriginalAmount > 0), aes(x = LoanOriginalAmount, fill = IncomeRange)) +
+  geom_density() +  
+  xlab("Amount in Dollars") + 
+  scale_x_continuous(breaks = seq(0,35000,10000)) +
+  facet_wrap(~IncomeRange, ncol = 3) +
+  coord_cartesian(xlim = c(0, quantile(prosperLoan$LoanOriginalAmount, 0.99, na.rm = TRUE))) +
+  ggtitle("Loan Original Amount with Different Income Range")
+```
+I classified $0, Not employed and Not displyed into one class for the reason that they didn't provide income information, and I found that with lower income, the loans trends to lower than 10000 dollars, while with higher income, for example, $75,000-99,999 and $100,000+, the density above 20000 is higher.
 # Bivariate Analysis
 
 ### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
-
+I first found that BorrowerRate is related to the ProsperScore. Without the outliers, borrowers need to afford a higher rate with a lower ProsperScore.
 ### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
-
+As I mentioned before, the main feature in my analysis is BorrowerRate, besides it, I also observed other features like month and Term, year and Term, ProsperScore and CreditRating, IncomeRange and LoanOriginalAmount.
 ### What was the strongest relationship you found?
-
-
+From the correlation matrix, the strongest relationship was BorrowerRate and CreditRating which I mixed from CreditGrade and ProsperRating. 
 
 
 # Multivariate Plots Section
+```{r echo=FALSE, Multivariate_Plots}
+ggplot(data = subset(prosperLoan, ProsperScore > 0 & Term == '36'), aes(ListingCreationDate, BorrowerRate)) +
+  geom_point(aes(color = ProsperScore), alpha = 0.2) + 
+  scale_color_continuous(high = "blue", low = "green")
+```
 
 ```{r echo=FALSE, Multivariate_Plots}
 

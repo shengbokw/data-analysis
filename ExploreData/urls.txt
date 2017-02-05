@@ -1,4 +1,0 @@
-https://github.com/ucaiado/ProsperLoan_EDA/blob/master/prosperLoan_EDA.rmd
-https://github.com/yanndupis/Exploratory-Data-Analysis-with-R-Prosper/blob/master/Prosper-EDA-Yann-Dupis_final.Rmd
-https://github.com/Success2014/Explore_Prosper_UDP3/blob/master/Exploratory_Data_Analysis.Rmd
-https://rstudio-pubs-static.s3.amazonaws.com/68611_df00687bfcf94145ab29659d62ca07dd.html

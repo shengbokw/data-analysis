@@ -9,6 +9,9 @@ output:
 
 What borrower rate you need to pay when you wanna a loan from Prosper
 ========================================================
+```{r global_options, include=FALSE}
+ knitr::opts_chunk$set(echo=FALSE, warning=FALSE, messages=FALSE)
+```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
 # Load all of the packages that you end up using
@@ -42,32 +45,41 @@ library(gridExtra)
 This report explores a dataset containing LoanStatus and attributes for almost 114000 loan data in Prosper. I pick out 15 variables from the total 81 variables which I think are strongly relative to borrower. So firstly I deal with the original data into a subset and take a look at the subset as follows:
 ```{r echo=FALSE, Load_the_Data}
 # Load the Data
-prosperLoan <- read.csv(file = "D:\\Users\\wangsb\\Downloads\\prosperLoanData.csv", header = TRUE, sep = ",")
+prosperLoan <- read.csv(file = "D:\\Users\\wangsb\\Downloads\\prosperLoanData.csv", 
+                        header = TRUE, sep = ",")
 
-subvariables <- c('ListingCreationDate','CreditGrade','Term','LoanStatus','BorrowerRate','ProsperRating..Alpha.','ProsperScore','ListingCategory..numeric.','BorrowerState','Occupation','CurrentDelinquencies','IncomeRange','TotalProsperLoans','TotalProsperPaymentsBilled','OnTimeProsperPayments','LoanOriginalAmount')
+# This is subvariables which I wanted to analyze
+subvariables <- c('ListingCreationDate','CreditGrade','Term','LoanStatus',
+                  'BorrowerRate','ProsperRating..Alpha.','ProsperScore',
+                  'ListingCategory..numeric.','BorrowerState','Occupation',
+                  'CurrentDelinquencies','IncomeRange','TotalProsperLoans',
+                  'TotalProsperPaymentsBilled','OnTimeProsperPayments',
+                  'LoanOriginalAmount')
 
+# Remove other variables
 prosperLoan <- subset(prosperLoan,select=subvariables)
 
+# Change the names for clearly understanding
 colnames(prosperLoan)[6] <- "ProsperRating"
 colnames(prosperLoan)[8] <- "ListingCategory"
 
-prosperLoan$TotalProsperPaymentdelinquencies <- prosperLoan$TotalProsperPaymentsBilled - prosperLoan$OnTimeProsperPayments
+# Add a new variable which equals to the difference between 
+# TotalProsperPaymentsBilled and OnTimeProsperPayments
+prosperLoan$TotalProsperPaymentdelinquencies <- 
+  prosperLoan$TotalProsperPaymentsBilled - prosperLoan$OnTimeProsperPayments
 
-subvariables <- c('ListingCreationDate','CreditGrade','Term','LoanStatus','BorrowerRate','ProsperRating','ProsperScore','ListingCategory','BorrowerState','Occupation','CurrentDelinquencies','IncomeRange','TotalProsperLoans','TotalProsperPaymentdelinquencies','LoanOriginalAmount')
+subvariables <- c('ListingCreationDate','CreditGrade','Term','LoanStatus',
+                  'BorrowerRate','ProsperRating','ProsperScore',
+                  'ListingCategory','BorrowerState','Occupation',
+                  'CurrentDelinquencies','IncomeRange','TotalProsperLoans',
+                  'TotalProsperPaymentdelinquencies','LoanOriginalAmount')
 
 prosperLoan <- subset(prosperLoan,select=subvariables)
 
+# Set 0 to the values which is na
 prosperLoan[is.na(prosperLoan)] <- 0
 
-ListingCategoryMap <- c("0"="Not Available","1"="Debt Consolidation","2"="Home Improvement","3"="Business",
-                        "4"="Personal Loan","5"="Student Use","6"="Auto","7"="Other","8"="Baby&Adoption",
-                        "9"="Boat","10"="Cosmetic Procedure","11"="Engagement Ring","12"="Green Loans",
-                        "13"="Household Expenses","14"="Large Purchases","15"="Medical/Dental","16"="Motorcycle",
-                        "17"="RV","18"="Taxes","19"="Vacation","20"="Wedding Loans")
-
-#prosperLoan$ListingCategory <- as.character(prosperLoan$ListingCategory)
-#revalue(prosperLoan$ListingCategory,ListingCategoryMap)
-
+# Transformed the ListingCategory into real meaning
 prosperLoan$ListingCategory[prosperLoan$ListingCategory == "0"] <- "Not Available"
 prosperLoan$ListingCategory[prosperLoan$ListingCategory == "1"] <- "Debt Consolidation"
 prosperLoan$ListingCategory[prosperLoan$ListingCategory == "2"] <- "Home Improvement"
@@ -92,12 +104,15 @@ prosperLoan$ListingCategory[prosperLoan$ListingCategory == "20"] <- "Wedding Loa
 
 prosperLoan$ListingCategory <- as.factor(prosperLoan$ListingCategory)
 
-prosperLoan$ListingCreationDate <- as.Date(prosperLoan$ListingCreationDate, format='%Y-%m-%d')
+# Transform the creation date into date format.
+prosperLoan$ListingCreationDate <- as.Date(prosperLoan$ListingCreationDate, 
+                                           format='%Y-%m-%d')
 
 #write.csv(file = './subsetProsperLoanData.csv', prosperLoan, na="0")
 
 names(prosperLoan)
 ```
+
 # Univariate Plots Section
 The variable 'TotalProsperPaymentdelinquencies' represents the delinquencies a borrower made, which is equal to the difference between 'TotalProsperPaymentsBilled' and 'OnTimeProsperPayments', because I think this variable may represent a borrower's credit, which is very important for applying a loan. Also I transform the value of 'ListingCategory' into the category which it means. And transform the value of 'ListingCreationDate' into date value.
 
@@ -105,25 +120,33 @@ Now let's explore the data. Because I want to disscuss about the borrowers, so t
 We can see that most of the loans are active but there still are some defaluted payments. But this variable stands for the status of a loan, I can't find any evidence of how easily one can borrow a loan, so I choose the variable BorrowerRate, which is also very important for a borrower.
 
 ```{r echo=FALSE}
-p <- ggplot(prosperLoan, aes(LoanStatus))
-p <- p + geom_bar(width = 1, colour="white", fill="blue")
-p <- p + geom_text(aes(y = ..count.., label = ..count..),
-                   stat = "count", color = "white",
-                   hjust = 1.0, size = 3)
-p <- p + theme(legend.position = "none")
-p <- p + coord_flip()
+univ_flip <- function(feature) {
+  ggplot(prosperLoan, aes(feature)) +
+    geom_bar(width = 1, colour="white") +
+    geom_text(aes(y = ..count.., label = ..count..),
+              stat = "count", color = "white",
+                   hjust = 1.0, size = 3) +
+    theme(legend.position = "none") +
+    coord_flip()
+}
+
+p <- univ_flip(prosperLoan$LoanStatus)
+  
 p
 ```
+
+
 ```{r echo=FALSE}
 ggplot(data=prosperLoan,aes(BorrowerRate)) + 
-  geom_histogram(color=I('black'),fill=I('orange'), bins = 50)
+  geom_histogram(color=I('black'),bins = 50)
 ```
 
 The Borrower Rate seems quite uniformly distributed, except for the data around 0.32, it seems there are some outliners. so let's take a close look at the range between 0.3-0.4 with 150 bins.
 
 ```{r echo=FALSE}
-ggplot(data=subset(prosperLoan, between(prosperLoan$BorrowerRate, 0.3, 0.4)),aes(BorrowerRate)) + 
-  geom_histogram(color=I('black'),fill=I('orange'), bins = 150) + 
+ggplot(data=subset(prosperLoan, between(prosperLoan$BorrowerRate, 0.3, 0.4)),
+       aes(BorrowerRate)) + 
+  geom_histogram(bins = 150) + 
   ggtitle('Frequency of Interest Rate (with 150 bins)')
 ```
 
@@ -151,7 +174,7 @@ Well, it seems there is no clear evidence.Now we know some information about the
 ```{r echo=FALSE}
 prosperLoan$Term<-factor(prosperLoan$Term)
 ggplot(data=prosperLoan,aes(Term)) + 
-  geom_bar(color=I('black'),fill=I('blue'))
+  geom_bar()
 ```
 
 From the above histogram, we can find that Prosper provides mostly 36-months loans, then 60-months, 12-months at least. From the count of loans and rule of thumb, maybe these 12-months loans is those high borrowerRate loans, which we can discuss in the next part. Let's see how custom risk score distribute, which was created by Prosper in order to assess risk. The score ranges from 1-11, with 11 being the best, or lowest, risk score.
@@ -165,58 +188,58 @@ ggplot(aes(x = ProsperScore), data = prosperLoan) +
 We can see that except for the missing values, borrowers' score are approximately normally distributed. Most of the borrowers have score ranging from 4 to 8. How about the ListingCategory:
 
 ```{r echo=FALSE}
-prosperLoan <- within(prosperLoan,
-                      ListingCategory <- factor(ListingCategory, 
-                                                levels = names(sort(table(ListingCategory),decreasing = TRUE))))
-p <- ggplot(prosperLoan, aes(ListingCategory))
-p <- p + geom_bar(width = 1, colour="white")
-p <- p + geom_text(aes(y = ..count.., label = ..count..),
-                   stat = "count", color = "white",
-                   hjust = 1.0, size = 3)
-p <- p + theme(legend.position = "none")
-p <- p + coord_flip()
+prosperLoan <- within(prosperLoan, 
+      ListingCategory <- factor(ListingCategory, 
+     levels = names(sort(table(ListingCategory),decreasing = TRUE))))
+
+p <- univ_flip(prosperLoan$ListingCategory) 
 p
 ```
 
 From the above figure, we could tell that most loans on Prosper are for Debt Consolidation. Excluding the Not Available and Other purposes, most of the loans go into Home Improvement, Business. While categories like entaimment things such as RV, Boat, Motorcycle, Vacation only accupate a small portion of the loan. Therefore, I conclude that most the people borrow money for necessary needs. Then how about the state:
 
 ```{r echo=FALSE}
+univ_vertical <- function(feature,v_angle,v_vjust,v_size) {
+  ggplot(prosperLoan, aes(feature)) +
+    geom_bar(width = 1, colour="white") +
+    geom_text(aes(y = ..count.., label = ..count..),
+              stat = "count", color = "white",
+                   hjust = 1.0, size = 3) +
+    theme(axis.text.x  = element_text(angle=v_angle, 
+                                      vjust=v_vjust, 
+                                      size = v_size))
+}
+
 prosperLoan <- within(prosperLoan,
-                      BorrowerState <- factor(BorrowerState, 
-                                                levels = names(sort(table(BorrowerState),decreasing = TRUE))))
+     BorrowerState <- factor(BorrowerState, 
+          levels = names(sort(table(BorrowerState), decreasing = TRUE))))
 par(mar = c(5, 1, 1, 5), mgp=c(3,1,0),las=0)
 
-ggplot(prosperLoan, aes(BorrowerState)) + 
-  geom_bar(bin = 1, colour="white") +
-  geom_text(aes(y = ..count.., label = ..count..),
-                   stat = "count", color = "white",
-                   hjust = 1.0, size = 3) + 
-  theme(axis.text.x  = element_text(angle=90, vjust=0.5, size = 7)) 
+p <- univ_vertical(prosperLoan$BorrowerState, 90, 0.5, 7)
+p
 ```
 
 As we can see from this histgrom, CA, TX, NY, Fl and IL have the most borrowers. It seems that these states are the most populous and economically areas as well. How about the occupation of the borrowers:
 
 ```{r echo=FALSE}
 prosperLoan <- within(prosperLoan,
-                      Occupation <- factor(Occupation, 
-                                                levels = names(sort(table(Occupation),decreasing = TRUE))))
-ggplot(prosperLoan, aes(Occupation)) + 
-  geom_bar(width = 1, colour="white") + 
-  geom_text(aes(y = ..count.., label = ..count..),
-                   stat = "count", color = "white",
-                   hjust = 1.0, size = 3) + 
-  theme(axis.text.x  = element_text(angle=90, vjust=0.5, size = 7)) 
+     Occupation <- factor(Occupation, 
+         levels = names(sort(table(Occupation),decreasing = TRUE))))
+
+p <- univ_vertical(prosperLoan$Occupation, 90, 0.5, 7)
+p
 ```
 
 There are so many borrowers who hadn't provided their occupation, ignoring this, Professional, computer programmer, Executive etc. borrow a loan most, and the tail show that few student borrow a loan, which meets the ListingCategory. So how about the borrowers' income:
 
 ```{r echo=FALSE}
 prosperLoan$IncomeRange = factor(prosperLoan$IncomeRange, 
-                                 levels=c("Not employed", "$0", "$1-24,999", "$25,000-49,999", 
-                                          "$50,000-74,999", "$75,000-99,999", "$100,000+", "Not displayed"))
+           levels=c("Not employed", "$0", "$1-24,999", "$25,000-49,999", 
+                    "$50,000-74,999", "$75,000-99,999", "$100,000+", 
+                    "Not displayed"))
 
 ggplot(data = prosperLoan, aes(x = IncomeRange)) + 
-  geom_bar(color = "black", fill = "pink") + 
+  geom_bar() + 
   theme(axis.text.x  = element_text(angle=30, vjust=0.5)) +
   ggtitle("Income range of the borrowers")
 ```
@@ -269,8 +292,11 @@ Since I have explored the univarite data, the next step is Bivariate section. BU
 prosperLoan$CreditGrade <- as.numeric(prosperLoan$CreditGrade) - 1
 prosperLoan$ProsperRating <- as.numeric(prosperLoan$ProsperRating) - 1
 
-p1 <- qplot(data = subset(prosperLoan, CreditGrade > 0), x = ListingCreationDate, bins = 30) + ylim(0,10000)
-p2 <- qplot(data = subset(prosperLoan, ProsperRating > 0), x = ListingCreationDate, bins = 90)
+p1 <- qplot(data = subset(prosperLoan, CreditGrade > 0), 
+            x = ListingCreationDate, bins = 30) + ylim(0,10000)
+p2 <- qplot(data = subset(prosperLoan, ProsperRating > 0), 
+            x = ListingCreationDate, bins = 90)
+
 grid.arrange(p1, p2, ncol = 2)
 ```
 
@@ -278,9 +304,11 @@ There two variables presents the credit of a person, after the lawsuit, Prosper 
 
 ```{r echo=FALSE}
 prosperLoan$CreditRating <- prosperLoan$CreditGrade
-prosperLoan$CreditRating[which(prosperLoan$ProsperRating > 0)] <- prosperLoan$ProsperRating[which(prosperLoan$ProsperRating > 0)]
+prosperLoan$CreditRating[which(prosperLoan$ProsperRating > 0)] <- 
+  prosperLoan$ProsperRating[which(prosperLoan$ProsperRating > 0)]
 
-prosperLoan$TermYears <- as.numeric(levels(prosperLoan$Term))[prosperLoan$Term] / 12
+prosperLoan$TermYears <- 
+  as.numeric(levels(prosperLoan$Term))[prosperLoan$Term] / 12
 ```
 
 With the selected variables, let's see the correlation matrix. 
@@ -311,7 +339,8 @@ ggplot(data = prosperLoan, aes(x = ProsperScore, y = BorrowerRate)) +
 From the boxplot above, we saw that without the outliers, there is a trendency that higher scores in Prosper recieve a lower borrower rate. So I removed the data whose ProsperScore is 0 and checked the corretionship.
 
 ```{r echo=FALSE}
-cor.test(~ BorrowerRate + ProsperScore, data = subset(prosperLoan, ProsperScore > 0 & ProsperScore < quantile(ProsperScore, 0.99)))
+cor.test(~ BorrowerRate + ProsperScore, data = subset(prosperLoan, 
+            ProsperScore > 0 & ProsperScore < quantile(ProsperScore, 0.99)))
 ```
 
 We saw the cor is equal to -0.6351316, it's strong relevated. Actually I also wanted to remove the outliers in each group, as the boxplot showed before, scores like 1, 2, 8, 9, 10 have several outliers, I should have removed those away, but I don't know how.(to the reviewer: can you help me, please?). Then I'm curious about the relationship between month and term, year and Term.
@@ -330,7 +359,8 @@ ggplot(data = prosperLoan, aes(year, fill=factor(Term))) +
 The most part of loans are 36-month, January has the contributes the most loans while March and April has the least loans. Maybe Within the Christmas and New Year holiday, people spend too much in shopping and transportation, then they need loans in January. In my opinion, there will be strong relationship between CreditRating and ProsperScore, so let's check it.
 
 ```{r echo=FALSE}
-cor.test(~ CreditRating + ProsperScore, data = subset(prosperLoan, ProsperScore > 0 & ProsperScore < quantile(ProsperScore, 0.99)))
+cor.test(~ CreditRating + ProsperScore, data = subset(prosperLoan, 
+          ProsperScore > 0 & ProsperScore < quantile(ProsperScore, 0.99)))
 ```
 
 The cor is -0.6721052, more stronger than BorrowerRate and ProsperScore. How about the relationship between the LoanOriginalAmount and income range?
@@ -339,19 +369,23 @@ The cor is -0.6721052, more stronger than BorrowerRate and ProsperScore. How abo
 prosperLoan$IncomeRange[prosperLoan$IncomeRange == "$0"] <- "Not displyed"
 prosperLoan$IncomeRange[prosperLoan$IncomeRange == "Not employed"] <- "Not displyed"
 
-ggplot(data = subset(prosperLoan, !is.na(IncomeRange) & LoanOriginalAmount > 0), aes(x = LoanOriginalAmount, fill = IncomeRange)) +
+ggplot(data = subset(prosperLoan, !is.na(IncomeRange) & LoanOriginalAmount > 0), 
+       aes(x = LoanOriginalAmount)) +
   geom_density() +  
   xlab("Amount in Dollars") + 
   scale_x_continuous(breaks = seq(0,35000,10000)) +
   facet_wrap(~IncomeRange, ncol = 3) +
-  coord_cartesian(xlim = c(0, quantile(prosperLoan$LoanOriginalAmount, 0.99, na.rm = TRUE))) +
+  coord_cartesian(xlim = c(0, 
+      quantile(prosperLoan$LoanOriginalAmount, 0.99, na.rm = TRUE))) +
   ggtitle("Loan Original Amount with Different Income Range")
 ```
 
 I classified $0, Not employed and Not displyed into one class for the reason that they didn't provide income information, and I found that with lower income, the loans trends to lower than 10000 dollars, while with higher income, for example, $75,000-99,999 and $100,000+, the density above 20000 is higher.
 
 ```{r echo=FALSE}
-cor.test(~ BorrowerRate + LoanOriginalAmount, data = subset(prosperLoan, LoanOriginalAmount > 0 & LoanOriginalAmount < quantile(LoanOriginalAmount, 0.99)))
+cor.test(~ BorrowerRate + LoanOriginalAmount, 
+         data = subset(prosperLoan, LoanOriginalAmount > 0 & 
+            LoanOriginalAmount < quantile(LoanOriginalAmount, 0.99)))
 ```
 
 # Bivariate Analysis
@@ -370,9 +404,10 @@ From the correlation matrix, the strongest relationship was BorrowerRate and Cre
 As I have metioned on the Bivariate part, 36-month term loans are from the beginning to the end, also the numbers are the most, so I controlled this variable to be 36-month, then I plotted the Borrower rate by list creation date, adding some colors using the ProsperScore.
 
 ```{r echo=FALSE}
-ggplot(data = subset(prosperLoan, ProsperScore > 0 & Term == '36'), aes(ListingCreationDate, BorrowerRate)) +
+ggplot(data = subset(prosperLoan, ProsperScore > 0 & Term == '36'), 
+       aes(ListingCreationDate, BorrowerRate)) +
   geom_point(aes(color = ProsperScore), alpha = 0.2) + 
-  scale_color_continuous(high = "blue", low = "green")
+  scale_color_continuous()
 ```
 
 It shows that with time passing, there are more and more loans borrowed in Prosper, and the borrower rate trends to lower, and there are more and more borrowers with low prosper score, also we can find a borrower can borrow a lower rate loan with a lower prosper score.
@@ -380,13 +415,14 @@ It shows that with time passing, there are more and more loans borrowed in Prosp
 Next I wanted to build a linear model. As I analyzed before, CreditRating, ProsperScore, LoanOriginalAmount and Term have a clear relationship with BorrowerRate, so I built a four linear model like as follows.
 
 ```{r echo=FALSE}
-m1 <- lm(BorrowerRate ~ CreditRating, data = subset(prosperLoan, ProsperScore > 0 & LoanOriginalAmount > 0))
+m1 <- lm(BorrowerRate ~ CreditRating, 
+         data = subset(prosperLoan, ProsperScore > 0 & LoanOriginalAmount > 0))
 m2 <- update(m1, ~ . + ProsperScore)
 m3 <- update(m2, ~ . + LoanOriginalAmount)
 m4 <- update(m3, ~ . + Term)
 mtable(m1, m2, m3, m4)
 ```
-From the models above we could see that CreditRating and Term DebtToIncomeRatio are very useful for predicting the borrower rate. However, ProsperScore and LoanOriginalAmount are of little use for predicting the borrower interest of loans. According to the p-values, which equal to 0.0, means that p-value is less than 0.0001, all the variables in the full model are significant. Moreover, the full model has a Adjusted R-squred of 0.9, which indicating that this is a valid model.
+From the models above we could see that CreditRating and Term DebtToIncomeRatio are very useful for predicting the borrower rate. However, ProsperScore and LoanOriginalAmount are of little use for predicting the borrower interest of loans. According to the p-values, which equal to 0.0, means that p-value is less than 0.0001, so all the variables in the full model are significant. Moreover, the full model has a Adjusted R-squred of 0.9, which indicating that this is a valid model.
 
 # Multivariate Analysis
 
@@ -406,7 +442,10 @@ Yes, I built a four linear model with features CreditRating, ProsperScore, LoanO
 ### Plot One
 ```{r echo=FALSE, Plot_One}
 ggplot(data=prosperLoan,aes(BorrowerRate)) + 
-  geom_histogram(color=I('black'),fill=I('orange'), bins = 50)
+  geom_histogram(color=I('black'),fill=I('orange'), bins = 50) +
+  xlab("BorrowerRate") +
+  ylab("Count of loans") +
+  ggtitle("The of Loans by Different Borrower Rate")
 ```
 
 ### Description One
@@ -419,7 +458,8 @@ From the above histogram of BorrowerRate, we saw that borrowers' rate approximat
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
 ggplot(data = prosperLoan, aes(x = ProsperScore, y = BorrowerRate)) +
-        geom_boxplot(aes(group=prosperLoan$ProsperScore)) 
+        geom_boxplot(aes(group=prosperLoan$ProsperScore)) +
+        ggtitle("The boxplot of Borrower Rate for Different Prosper Score")
 ```
 
 ### Description Two
@@ -427,9 +467,11 @@ There is a trendency that higher scores in Prosper recieve a lower borrower rate
 
 ### Plot Three
 ```{r echo=FALSE, Plot_Three}
-ggplot(data = subset(prosperLoan, ProsperScore > 0 & Term == '36'), aes(ListingCreationDate, BorrowerRate)) +
+ggplot(data = subset(prosperLoan, ProsperScore > 0 & Term == '36'), 
+       aes(ListingCreationDate, BorrowerRate)) +
   geom_point(aes(color = ProsperScore), alpha = 0.2) + 
-  scale_color_continuous(high = "blue", low = "green")
+  scale_color_continuous() +
+  ggtitle("In Different Creation Date, a Distribution by Borrower Rate and Prosper Score")
 ```
 
 ### Description Three

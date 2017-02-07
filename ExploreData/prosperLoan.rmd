@@ -117,7 +117,6 @@ names(prosperLoan)
 The variable 'TotalProsperPaymentdelinquencies' represents the delinquencies a borrower made, which is equal to the difference between 'TotalProsperPaymentsBilled' and 'OnTimeProsperPayments', because I think this variable may represent a borrower's credit, which is very important for applying a loan. Also I transform the value of 'ListingCategory' into the category which it means. And transform the value of 'ListingCreationDate' into date value.
 
 Now let's explore the data. Because I want to disscuss about the borrowers, so the first thing came up to my mind is how easily one person can borrow a loan from Prosper. Then you need know whether an application for a loan is accepted or not, Then I find a variable called LoanStatus.
-We can see that most of the loans are active but there still are some defaluted payments. But this variable stands for the status of a loan, I can't find any evidence of how easily one can borrow a loan, so I choose the variable BorrowerRate, which is also very important for a borrower.
 
 ```{r echo=FALSE}
 univ_flip <- function(feature) {
@@ -127,14 +126,16 @@ univ_flip <- function(feature) {
               stat = "count", color = "white",
                    hjust = 1.0, size = 3) +
     theme(legend.position = "none") +
-    coord_flip()
+    coord_flip() +
+    ylab("Count") 
 }
 
-p <- univ_flip(prosperLoan$LoanStatus)
-  
+p <- univ_flip(prosperLoan$LoanStatus) + 
+  xlab("LoanStatus")
 p
 ```
 
+We can see that most of the loans are active but there still are some defaluted payments. But this variable stands for the status of a loan, I can't find any evidence of how easily one can borrow a loan, so I choose the variable BorrowerRate, which is also very important for a borrower.
 
 ```{r echo=FALSE}
 ggplot(data=prosperLoan,aes(BorrowerRate)) + 
@@ -192,7 +193,8 @@ prosperLoan <- within(prosperLoan,
       ListingCategory <- factor(ListingCategory, 
      levels = names(sort(table(ListingCategory),decreasing = TRUE))))
 
-p <- univ_flip(prosperLoan$ListingCategory) 
+p <- univ_flip(prosperLoan$ListingCategory)  + 
+  xlab("ListingCategory")
 p
 ```
 
@@ -215,7 +217,8 @@ prosperLoan <- within(prosperLoan,
           levels = names(sort(table(BorrowerState), decreasing = TRUE))))
 par(mar = c(5, 1, 1, 5), mgp=c(3,1,0),las=0)
 
-p <- univ_vertical(prosperLoan$BorrowerState, 90, 0.5, 7)
+p <- univ_vertical(prosperLoan$BorrowerState, 90, 0.5, 7) +
+  xlab("BorrowerState")
 p
 ```
 
@@ -226,7 +229,8 @@ prosperLoan <- within(prosperLoan,
      Occupation <- factor(Occupation, 
          levels = names(sort(table(Occupation),decreasing = TRUE))))
 
-p <- univ_vertical(prosperLoan$Occupation, 90, 0.5, 7)
+p <- univ_vertical(prosperLoan$Occupation, 90, 0.5, 7) +
+  xlab("Occupation")
 p
 ```
 

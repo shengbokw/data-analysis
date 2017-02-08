@@ -330,10 +330,16 @@ set.seed(20022012)
 loan_samp <- sub_prosperLoan[sample(1:length(sub_prosperLoan$BorrowerRate),10000),]
 ggpairs(loan_samp, 
   lower = list(continuous = wrap("points", shape = I('.'))), 
-  upper = list(combo = wrap("box", outlier.shape = I('.'))))
+  upper = list(combo = wrap("box", outlier.shape = I('.'))),
+  columnLabels = c("BRate","year","month","TYears",
+                   "PScore",
+                   "TLoans",
+                   "LAmount",
+                   "CDels",
+                   "CRating"))
 ```
 
-I also tranformed Term to TermYears, but there is no significant relevance between Term and borrowerRate, and this is out of my mind. From the correlation matrix, we see that CreditRating has the strongest relationship with BorrowerRate, and OriginalAmount next. Though the correlation between BorrowerRate and ProsperScore is less than 0.3, I still wanted to draw a boxplot to see it in detail.
+The correlation matrix is showed above, the labels in the matrix is mapped like this: BRate->BorrowerRate, TYears->TermYears, PScore->ProsperScore, TLoans->TotalProsperLoans, LAmount->LoanOriginalAmount, CDelis->CurrentDelinquencies, CRating->CreditRating, I also tranformed Term to TermYears, but there is no significant relevance between Term and borrowerRate, and this is out of my mind. From the correlation matrix, we see that CreditRating has the strongest relationship with BorrowerRate, and OriginalAmount next. Though the correlation between BorrowerRate and ProsperScore is less than 0.3, I still wanted to draw a boxplot to see it in detail.
 
 ```{r echo=FALSE}
 ggplot(data = prosperLoan, aes(x = ProsperScore, y = BorrowerRate)) +
@@ -446,7 +452,7 @@ Yes, I built a four linear model with features CreditRating, ProsperScore, LoanO
 ### Plot One
 ```{r echo=FALSE, Plot_One}
 ggplot(data=prosperLoan,aes(BorrowerRate)) + 
-  geom_histogram(color=I('black'),fill=I('orange'), bins = 50) +
+  geom_histogram(color=I('black'), bins = 50) +
   xlab("BorrowerRate") +
   ylab("Count of loans") +
   ggtitle("The of Loans by Different Borrower Rate")
@@ -475,7 +481,7 @@ ggplot(data = subset(prosperLoan, ProsperScore > 0 & Term == '36'),
        aes(ListingCreationDate, BorrowerRate)) +
   geom_point(aes(color = ProsperScore), alpha = 0.2) + 
   scale_color_continuous() +
-  ggtitle("In Different Creation Date, a Distribution by Borrower Rate and Prosper Score")
+  ggtitle("Distribution by BorrowerRate and ProsperScore")
 ```
 
 ### Description Three
